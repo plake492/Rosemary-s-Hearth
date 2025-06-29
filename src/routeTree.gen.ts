@@ -10,17 +10,29 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as SuperSecretRouteRouteImport } from './routes/superSecretRoute'
-import { Route as ProductsRouteImport } from './routes/products'
+import { Route as MenuRouteImport } from './routes/menu'
+import { Route as AdminRouteImport } from './routes/admin'
+import { Route as AuthRouteRouteImport } from './routes/_authRoute'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as AuthRouteAdminDashRouteImport } from './routes/_authRoute/admin-dash'
 
 const SuperSecretRouteRoute = SuperSecretRouteRouteImport.update({
   id: '/superSecretRoute',
   path: '/superSecretRoute',
   getParentRoute: () => rootRouteImport,
 } as any)
-const ProductsRoute = ProductsRouteImport.update({
-  id: '/products',
-  path: '/products',
+const MenuRoute = MenuRouteImport.update({
+  id: '/menu',
+  path: '/menu',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AdminRoute = AdminRouteImport.update({
+  id: '/admin',
+  path: '/admin',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AuthRouteRoute = AuthRouteRouteImport.update({
+  id: '/_authRoute',
   getParentRoute: () => rootRouteImport,
 } as any)
 const IndexRoute = IndexRouteImport.update({
@@ -28,34 +40,55 @@ const IndexRoute = IndexRouteImport.update({
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AuthRouteAdminDashRoute = AuthRouteAdminDashRouteImport.update({
+  id: '/admin-dash',
+  path: '/admin-dash',
+  getParentRoute: () => AuthRouteRoute,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
-  '/products': typeof ProductsRoute
+  '/admin': typeof AdminRoute
+  '/menu': typeof MenuRoute
   '/superSecretRoute': typeof SuperSecretRouteRoute
+  '/admin-dash': typeof AuthRouteAdminDashRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
-  '/products': typeof ProductsRoute
+  '/admin': typeof AdminRoute
+  '/menu': typeof MenuRoute
   '/superSecretRoute': typeof SuperSecretRouteRoute
+  '/admin-dash': typeof AuthRouteAdminDashRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
-  '/products': typeof ProductsRoute
+  '/_authRoute': typeof AuthRouteRouteWithChildren
+  '/admin': typeof AdminRoute
+  '/menu': typeof MenuRoute
   '/superSecretRoute': typeof SuperSecretRouteRoute
+  '/_authRoute/admin-dash': typeof AuthRouteAdminDashRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/products' | '/superSecretRoute'
+  fullPaths: '/' | '/admin' | '/menu' | '/superSecretRoute' | '/admin-dash'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/products' | '/superSecretRoute'
-  id: '__root__' | '/' | '/products' | '/superSecretRoute'
+  to: '/' | '/admin' | '/menu' | '/superSecretRoute' | '/admin-dash'
+  id:
+    | '__root__'
+    | '/'
+    | '/_authRoute'
+    | '/admin'
+    | '/menu'
+    | '/superSecretRoute'
+    | '/_authRoute/admin-dash'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
-  ProductsRoute: typeof ProductsRoute
+  AuthRouteRoute: typeof AuthRouteRouteWithChildren
+  AdminRoute: typeof AdminRoute
+  MenuRoute: typeof MenuRoute
   SuperSecretRouteRoute: typeof SuperSecretRouteRoute
 }
 
@@ -68,11 +101,25 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof SuperSecretRouteRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/products': {
-      id: '/products'
-      path: '/products'
-      fullPath: '/products'
-      preLoaderRoute: typeof ProductsRouteImport
+    '/menu': {
+      id: '/menu'
+      path: '/menu'
+      fullPath: '/menu'
+      preLoaderRoute: typeof MenuRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/admin': {
+      id: '/admin'
+      path: '/admin'
+      fullPath: '/admin'
+      preLoaderRoute: typeof AdminRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/_authRoute': {
+      id: '/_authRoute'
+      path: ''
+      fullPath: ''
+      preLoaderRoute: typeof AuthRouteRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/': {
@@ -82,12 +129,33 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/_authRoute/admin-dash': {
+      id: '/_authRoute/admin-dash'
+      path: '/admin-dash'
+      fullPath: '/admin-dash'
+      preLoaderRoute: typeof AuthRouteAdminDashRouteImport
+      parentRoute: typeof AuthRouteRoute
+    }
   }
 }
 
+interface AuthRouteRouteChildren {
+  AuthRouteAdminDashRoute: typeof AuthRouteAdminDashRoute
+}
+
+const AuthRouteRouteChildren: AuthRouteRouteChildren = {
+  AuthRouteAdminDashRoute: AuthRouteAdminDashRoute,
+}
+
+const AuthRouteRouteWithChildren = AuthRouteRoute._addFileChildren(
+  AuthRouteRouteChildren,
+)
+
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
-  ProductsRoute: ProductsRoute,
+  AuthRouteRoute: AuthRouteRouteWithChildren,
+  AdminRoute: AdminRoute,
+  MenuRoute: MenuRoute,
   SuperSecretRouteRoute: SuperSecretRouteRoute,
 }
 export const routeTree = rootRouteImport

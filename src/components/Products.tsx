@@ -24,12 +24,12 @@ export default function Products() {
       {menuItems.map((item) => (
         <ProductCard key={item.id} item={item} />
       ))}{' '}
-      {menuItems.map((item) => (
+      {/* {menuItems.map((item) => (
         <ProductCard key={item.id} item={item} />
       ))}{' '}
       {menuItems.map((item) => (
         <ProductCard key={item.id} item={item} />
-      ))}{' '}
+      ))}{' '} */}
     </div>
   );
 }

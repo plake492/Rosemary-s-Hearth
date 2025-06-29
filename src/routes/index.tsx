@@ -4,12 +4,15 @@ import LinkCards from '@/components/LinkCards';
 import * as Icons from '@/components/Icons';
 import { pageLinks } from '@/lib/siteLinks';
 import SocialLinks from '@/components/SocialLinks';
+import { useOrderWindowCountdown } from '@/hooks/useOrderWindowCountdown';
 
 export const Route = createFileRoute('/')({
   component: App,
 });
 
 function App() {
+  const { countdown, showCTA } = useOrderWindowCountdown();
+
   return (
     <>
       <main
@@ -39,7 +42,12 @@ function App() {
           </section>
           <section className="flex-1 lg:p-8 p-4 rounded-lg grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 w-auto md:w-full">
             {pageLinks.map((link) => (
-              <LinkCards key={link.title} {...link} />
+              <LinkCards
+                key={link.title}
+                {...link}
+                countdown={countdown}
+                showCTA={showCTA}
+              />
             ))}
           </section>
           <div className="flex pt-8 px-16 gap-4 md:hidden pb-12">

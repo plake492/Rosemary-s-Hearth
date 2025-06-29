@@ -1,10 +1,16 @@
 import * as Icons from '@/components/Icons';
+import { shopLink } from '@/lib/constants';
 
 export const pageLinks: {
   title: string;
   href: string;
   icon: keyof typeof Icons;
   bgColor?: string;
+  isOrder?: boolean;
+  linkProps?: {
+    target?: string;
+    rel?: string;
+  };
 }[] = [
   {
     title: 'Current Menu',
@@ -26,9 +32,14 @@ export const pageLinks: {
   },
   {
     title: 'Order Now',
-    href: '/blog',
+    href: shopLink,
     icon: 'BreadBasket',
     bgColor: 'sage',
+    isOrder: true,
+    linkProps: {
+      target: '_blank',
+      rel: 'noopener noreferrer',
+    },
   },
   {
     title: 'Book a Popup',

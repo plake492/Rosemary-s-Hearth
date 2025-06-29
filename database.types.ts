@@ -13,20 +13,35 @@ export type Database = {
         Row: {
           created_at: string
           id: number
+          orders_close_day: number | null
+          orders_close_time: string | null
           orders_close_timestamp: string | null
+          orders_open_day: number | null
+          orders_open_time: string | null
           orders_open_timestamp: string | null
+          use_recurring_time: boolean | null
         }
         Insert: {
           created_at?: string
           id?: number
+          orders_close_day?: number | null
+          orders_close_time?: string | null
           orders_close_timestamp?: string | null
+          orders_open_day?: number | null
+          orders_open_time?: string | null
           orders_open_timestamp?: string | null
+          use_recurring_time?: boolean | null
         }
         Update: {
           created_at?: string
           id?: number
+          orders_close_day?: number | null
+          orders_close_time?: string | null
           orders_close_timestamp?: string | null
+          orders_open_day?: number | null
+          orders_open_time?: string | null
           orders_open_timestamp?: string | null
+          use_recurring_time?: boolean | null
         }
         Relationships: []
       }

@@ -7,7 +7,8 @@
     "start": "vite --port 3000",
     "build": "vite build && tsc",
     "serve": "vite preview",
-    "test": "vitest run"
+    "test": "vitest run",
+    "db:type": "npx supabase gen types typescript --project-id ebmikxtbyqejermnjvug --schema public > database.types.ts"
   },
   "dependencies": {
     "@supabase/supabase-js": "^2.50.2",
