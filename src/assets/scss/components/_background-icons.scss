@@ -1,0 +1,33 @@
+.homepage {
+  .rosemary-bg {
+    position: absolute;
+    color: #ebdfd0;
+    width: 780px;
+    height: 780px;
+
+    @media screen and (max-width: 768px) {
+      width: 480px;
+      height: 480px;
+    }
+
+    &.one {
+      top: 50%;
+      right: calc(100% - 320px);
+      z-index: -1;
+      transform: translateY(-50%) rotate(-50deg) scaleY(-1);
+      transform-origin: center;
+
+      @media screen and (max-width: 768px) {
+        top: 33%;
+      }
+    }
+
+    &.two {
+      top: 75%;
+      right: -220px;
+      z-index: -1;
+      transform: translateY(-50%) rotate(164deg) scaleY(-1);
+      transform-origin: center;
+    }
+  }
+}

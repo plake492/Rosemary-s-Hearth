@@ -1,0 +1,54 @@
+@use '../abstract/vars' as *;
+
+body {
+  background-color: $color-cream;
+}
+
+.bg-rosemary {
+  background-color: $color-rosmary;
+  color: $text-primary-dark;
+
+  &.bg-hover:hover {
+    background-color: $color-rosmary-hover;
+  }
+}
+
+.bg-light-orange {
+  background-color: $color-light-orange;
+  color: $text-primary-dark;
+  &.bg-hover:hover {
+    background-color: $color-light-orange-hover;
+  }
+}
+
+.bg-sage {
+  background-color: $color-sage;
+  color: $text-primary-light;
+  &.bg-hover:hover {
+    background-color: $color-sage-hover;
+  }
+}
+
+.bg-brown {
+  background-color: $color-brown;
+  color: $text-primary-light;
+  &.bg-hover:hover {
+    background-color: $color-brown-hover;
+  }
+}
+
+.bg-cream {
+  background-color: $color-cream;
+  color: $text-primary-dark;
+  &.bg-hover:hover {
+    background-color: $color-cream-hover;
+  }
+}
+
+.bg-orange {
+  background-color: $color-orange;
+  color: $text-primary-light;
+  &.bg-hover:hover {
+    background-color: $color-orange-hover;
+  }
+}
