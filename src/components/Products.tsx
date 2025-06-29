@@ -22,14 +22,8 @@ export default function Products() {
   return (
     <div className="grid grid-cols-3 gap-4">
       {menuItems.map((item) => (
-        <ProductCard key={item.id} item={item} />
+        <ProductCard key={item.id} item={item} color="#000" />
       ))}{' '}
-      {/* {menuItems.map((item) => (
-        <ProductCard key={item.id} item={item} />
-      ))}{' '}
-      {menuItems.map((item) => (
-        <ProductCard key={item.id} item={item} />
-      ))}{' '} */}
     </div>
   );
 }

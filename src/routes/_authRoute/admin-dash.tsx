@@ -8,11 +8,11 @@ export const Route = createFileRoute('/_authRoute/admin-dash')({
 
 function RouteComponent() {
   // Order time state
-  const [currentOpeningTimestamp, setCurrentOpeningTimestamp] =
-    React.useState<Date | null>(null);
-  const [currentCountdown, setCurrentCountdown] = React.useState<Date | null>(
-    null,
-  );
+  // const [currentOpeningTimestamp, setCurrentOpeningTimestamp] =
+  //   React.useState<Date | null>(null);
+  // const [currentCountdown, setCurrentCountdown] = React.useState<Date | null>(
+  //   null,
+  // );
   const [openInput, setOpenInput] = React.useState<string>('');
   const [closeInput, setCloseInput] = React.useState<string>('');
   const [openDay, setOpenDay] = React.useState<number | null>(null);
@@ -44,15 +44,15 @@ function RouteComponent() {
         console.error('Error fetching orders status:', error);
       } else {
         if (data.orders_open_timestamp) {
-          setCurrentOpeningTimestamp(
-            new Date(data.orders_open_timestamp.split('T').join(' ')),
-          );
+          // setCurrentOpeningTimestamp(
+          //   new Date(data.orders_open_timestamp.split('T').join(' ')),
+          // );
           setOpenInput(data.orders_open_timestamp.slice(0, 16));
         }
         if (data.orders_close_timestamp) {
-          setCurrentCountdown(
-            new Date(data.orders_close_timestamp.split('T').join(' ')),
-          );
+          // setCurrentCountdown(
+          //   new Date(data.orders_close_timestamp.split('T').join(' ')),
+          // );
           setCloseInput(data.orders_close_timestamp.slice(0, 16));
         }
         // Use correct columns for open/close day/time and recurring switch
@@ -98,8 +98,8 @@ function RouteComponent() {
       setMessage('Error updating values.');
     } else {
       setMessage('Timestamps updated!');
-      setCurrentOpeningTimestamp(openISO ? new Date(openISO) : null);
-      setCurrentCountdown(closeISO ? new Date(closeISO) : null);
+      // setCurrentOpeningTimestamp(openISO ? new Date(openISO) : null);
+      // setCurrentCountdown(closeISO ? new Date(closeISO) : null);
     }
     setLoading(false);
   };

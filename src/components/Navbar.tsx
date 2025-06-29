@@ -10,7 +10,6 @@ const convertToDate = (timestamp: string | null): string | null => {
 
 export default function Navbar() {
   const [ordersOpen, setOrdersOpen] = React.useState<string | null>(null);
-  const [ordersClose, setOrdersClose] = React.useState<string | null>(null);
 
   React.useEffect(() => {
     const fetchOrdersStatus = async () => {
@@ -24,7 +23,6 @@ export default function Navbar() {
         console.error('Error fetching orders status:', error);
       } else {
         setOrdersOpen(convertToDate(data.orders_open_timestamp));
-        setOrdersClose(convertToDate(data.orders_close_timestamp));
       }
     };
 
