@@ -20,7 +20,7 @@ export default function ProductForm({
   const [productMessage, setProductMessage] = React.useState('');
   const [productLoading, setProductLoading] = React.useState(false);
   const [imageName, setImageName] = React.useState('');
-  const [file, setFile] = React.useState<File | null>(null);
+  //   const [file, setFile] = React.useState<File | null>(null);
 
   const handleProductSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
