@@ -9,6 +9,30 @@ export type Json =
 export type Database = {
   public: {
     Tables: {
+      media: {
+        Row: {
+          created_at: string
+          id: number
+          name: string
+          url: string
+          uuid: string
+        }
+        Insert: {
+          created_at?: string
+          id?: number
+          name: string
+          url: string
+          uuid?: string
+        }
+        Update: {
+          created_at?: string
+          id?: number
+          name?: string
+          url?: string
+          uuid?: string
+        }
+        Relationships: []
+      }
       "order-time": {
         Row: {
           created_at: string
@@ -50,27 +74,69 @@ export type Database = {
           created_at: string
           description: string | null
           id: number
+          link: string | null
           name: string | null
           price: string | null
-          uuid: string | null
+          published: boolean | null
+          uuid: string
         }
         Insert: {
           created_at?: string
           description?: string | null
           id?: number
+          link?: string | null
           name?: string | null
           price?: string | null
-          uuid?: string | null
+          published?: boolean | null
+          uuid?: string
         }
         Update: {
           created_at?: string
           description?: string | null
           id?: number
+          link?: string | null
           name?: string | null
           price?: string | null
-          uuid?: string | null
+          published?: boolean | null
+          uuid?: string
         }
         Relationships: []
+      }
+      product_media: {
+        Row: {
+          created_at: string
+          id: number
+          media_id: string
+          product_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: number
+          media_id?: string
+          product_id?: string
+        }
+        Update: {
+          created_at?: string
+          id?: number
+          media_id?: string
+          product_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "product_media_media_id_fkey"
+            columns: ["media_id"]
+            isOneToOne: true
+            referencedRelation: "media"
+            referencedColumns: ["uuid"]
+          },
+          {
+            foreignKeyName: "product_media_product_id_fkey"
+            columns: ["product_id"]
+            isOneToOne: true
+            referencedRelation: "product"
+            referencedColumns: ["uuid"]
+          },
+        ]
       }
     }
     Views: {

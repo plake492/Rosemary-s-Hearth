@@ -28,14 +28,19 @@ function getCurrentOrNextWindow(
 }
 
 function getTimeRemaining(target: Date | null): string {
-  if (!target) return '0 days 0 hours 0 minutes';
+  if (!target) return '0 days';
   const now = new Date();
   const diff = target.getTime() - now.getTime();
-  if (diff <= 0) return '0 days 0 hours 0 minutes';
+  if (diff <= 0) return '0 days';
   const days = Math.floor(diff / (1000 * 60 * 60 * 24));
   const hours = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-  const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
-  return `${days} day${days !== 1 ? 's' : ''} ${hours} hour${hours !== 1 ? 's' : ''} ${minutes} minute${minutes !== 1 ? 's' : ''}`;
+  // If more than 24 hours, show only days
+  if (diff >= 1000 * 60 * 60 * 24) {
+    return `${days} day${days !== 1 ? 's' : ''}`;
+  } else {
+    // Less than 24 hours, show only hours
+    return `${hours} hour${hours !== 1 ? 's' : ''}`;
+  }
 }
 
 export function useOrderWindowCountdown() {
