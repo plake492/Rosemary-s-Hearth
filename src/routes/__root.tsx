@@ -2,6 +2,7 @@ import React from 'react';
 import { Outlet, createRootRoute } from '@tanstack/react-router';
 import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
+import { Analytics } from '@vercel/analytics/next';
 // import { TanStackRouterDevtools } from '@tanstack/react-router-devtools';
 
 export const Route = createRootRoute({
@@ -39,6 +40,8 @@ function Root() {
         <Footer />
         <div className="h-12 block sm:hidden" />
       </div>
+      <Analytics />
+
       {/* <TanStackRouterDevtools /> */}
     </>
   );
