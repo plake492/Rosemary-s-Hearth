@@ -4,7 +4,7 @@ import * as SocialLinkUrls from '@/lib/constants';
 
 export default function SocialLinks() {
   return (
-    <>
+    <div className="flex flex-row items-center gap-8 md:gap-4 pt-2 md:pt-8 max-w-[224px] mx-auto">
       <a
         href={SocialLinkUrls.instagramLink}
         target="_blank"
@@ -26,6 +26,6 @@ export default function SocialLinks() {
       >
         <Icons.FacebookIcon />
       </a>
-    </>
+    </div>
   );
 }

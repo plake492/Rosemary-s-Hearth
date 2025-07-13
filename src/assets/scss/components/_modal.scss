@@ -1,3 +1,5 @@
+@use '../base/colors' as *;
+
 .modal-backdrop {
   position: fixed;
   top: 0;
@@ -12,19 +14,18 @@
 }
 
 .modal-wrapper {
-  background: #fff;
   border-radius: 12px;
   box-shadow: 0 8px 32px rgba(0, 0, 0, 0.18);
   max-width: 800px;
   max-height: 90vh;
-  width: fit-content;
+  min-height: 75vh;
+  width: 600px;
   overflow: auto;
   position: relative;
   z-index: 1001;
   padding: 20px 60px;
   animation: modal-fade-in 0.2s;
-  display: grid;
-  place-content: center;
+  @extend .bg-cream;
 }
 
 .modal-close {

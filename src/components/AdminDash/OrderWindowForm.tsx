@@ -54,12 +54,8 @@ export default function OrderWindowForm() {
           setRecurringDates(data.use_recurring_time);
       }
     };
-    // const fetchProducts = async () => {
-    //   const { data, error } = await supabase.from('product').select();
-    //   if (!error && data) setProducts(data);
-    // };
+
     fetchOrdersStatus();
-    // fetchProducts();
   }, []);
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -92,7 +88,7 @@ export default function OrderWindowForm() {
   };
 
   return (
-    <div className="mt-12 flex-1">
+    <div>
       <p className="h3 mb-4">Update Time</p>
       <form className="mt-6" onSubmit={handleSubmit}>
         <div

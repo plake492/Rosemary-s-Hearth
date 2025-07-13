@@ -1,30 +1,48 @@
 import type { Tables } from '../../../database.types';
+import ProductImageCarousel from './ProductImageCarousel';
 
 export default function ProductCard({
   product,
-  color,
+  showCTA,
 }: {
   product: Tables<'product'> & {
     media: Tables<'media'>[];
   };
-  color: string | undefined;
+  showCTA?: boolean;
 }) {
   return (
-    <div key={product.id} className={`p-4 rounded-lg bg-${color || 'sage'}`}>
-      {product.media &&
-        product.media.length > 0 &&
-        product.media.map((media) => (
-          <img
-            key={media.id}
-            src={media.url}
+    <div key={product.id} className={`w-full p-4 rounded-lg bg-${'rosemary'}`}>
+      <div className="flex flex-col justify-between h-full">
+        {product.media && product.media.length > 0 && (
+          <ProductImageCarousel
+            images={product.media}
             alt={product.name || 'Product Image'}
-            className="w-full aspect-[4/3] object-cover rounded-md"
           />
-        ))}
-
-      <h2 className="text-xl font-bold">{product.name}</h2>
-      <p>{product.description}</p>
-      <p className="text-lg">${product.price}</p>
+        )}
+        <div className="flex flex-col jusrify-between h-full">
+          <div>
+            <h3 className="text-xl font-bold text-balance mb-4 mt-2">
+              {product.name}
+            </h3>
+            <p className="mb-4">{product.description}</p>
+          </div>
+        </div>
+        <div className="flex justify-between gap-2">
+          {product.link && showCTA ? (
+            <a
+              href={product.link}
+              className=" hover:underline"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              View Product
+            </a>
+          ) : (
+            <span></span>
+          )}
+          <p className="h4 text-bold justify-self-end">${product.price}</p>
+        </div>
+      </div>
     </div>
   );
 }

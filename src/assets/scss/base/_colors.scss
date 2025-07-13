@@ -1,7 +1,8 @@
 @use '../abstract/vars' as *;
 
-body {
-  background-color: $color-cream;
+body,
+html {
+  background: $color-brown;
 }
 
 .bg-rosemary {
