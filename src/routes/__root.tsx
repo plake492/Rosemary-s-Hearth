@@ -2,7 +2,7 @@ import React from 'react';
 import { Outlet, createRootRoute } from '@tanstack/react-router';
 import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
-import { Analytics } from '@vercel/analytics/next';
+import { Analytics } from '@vercel/analytics/react';
 // import { TanStackRouterDevtools } from '@tanstack/react-router-devtools';
 
 export const Route = createRootRoute({
