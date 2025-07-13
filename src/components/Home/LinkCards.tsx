@@ -1,4 +1,4 @@
-import * as Icons from './Icons';
+import * as Icons from '@/components/Icons';
 
 export default function LinkCards({
   title,
