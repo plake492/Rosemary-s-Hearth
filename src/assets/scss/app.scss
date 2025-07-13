@@ -6,3 +6,7 @@
 
 @use './components/background-icons';
 @use './components/modal';
+
+.pb-safe {
+  padding-bottom: env(safe-area-inset-bottom);
+}

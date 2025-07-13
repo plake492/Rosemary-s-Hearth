@@ -37,6 +37,7 @@ function Root() {
           <Outlet />
         </div>
         <Footer />
+        <div className="h-12 block sm:hidden" />
       </div>
       {/* <TanStackRouterDevtools /> */}
     </>
