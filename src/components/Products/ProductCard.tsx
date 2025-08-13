@@ -11,7 +11,7 @@ export default function ProductCard({
   showCTA?: boolean;
 }) {
   return (
-    <div key={product.id} className={`w-full p-4 rounded-lg bg-${'rosemary'}`}>
+    <div key={product.id} className={`w-full p-4 rounded-lg bg-rosemary hover:transform hover:scale-[1.02] hover:shadow-sm transition-transform duration-200`}>
       <div className="flex flex-col justify-between h-full">
         {product.media && product.media.length > 0 && (
           <ProductImageCarousel

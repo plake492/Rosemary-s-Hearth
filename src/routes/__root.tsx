@@ -1,8 +1,8 @@
-import React from 'react';
 import { Outlet, createRootRoute } from '@tanstack/react-router';
 import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
 import { Analytics } from '@vercel/analytics/react';
+import { useLayoutStore } from '@/state/layoutStore';
 // import { TanStackRouterDevtools } from '@tanstack/react-router-devtools';
 
 export const Route = createRootRoute({
@@ -10,26 +10,11 @@ export const Route = createRootRoute({
 });
 
 function Root() {
-  const headerRef = React.useRef<HTMLDivElement | null>(null);
-  const [headerHeight, setHeaderHeight] = React.useState(0);
-
-  React.useEffect(() => {
-    function updateHeaderHeight() {
-      if (headerRef.current) {
-        setHeaderHeight(headerRef.current.offsetHeight);
-      }
-    }
-
-    setTimeout(() => {
-      updateHeaderHeight();
-    }, 300);
-    window.addEventListener('resize', updateHeaderHeight);
-    return () => window.removeEventListener('resize', updateHeaderHeight);
-  }, [headerHeight]);
+  const { headerHeight } = useLayoutStore();
 
   return (
     <>
-      <Navbar headerRef={headerRef} />
+      {/* <Navbar /> */}
       <div
         className="relative flex flex-col"
         style={{ minHeight: `calc(100dvh - ${headerHeight}px)` }}

@@ -3,7 +3,7 @@ import ProductCard from './ProductCard';
 import useGetProducts from '@/hooks/useGetProducts';
 
 export default function Products() {
-  const { products } = useGetProducts();
+  const { products } = useGetProducts({ skipUnpublished: true });
   const { showCTA } = useOrderWindowCountdown();
 
   return (

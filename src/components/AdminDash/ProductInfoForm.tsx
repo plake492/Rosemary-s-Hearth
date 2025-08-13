@@ -79,8 +79,8 @@ export default function ProductForm({
   ) => setProductForm({ ...productForm, [e.target.name]: e.target.value });
 
   return (
-    <div className="my-12 flex-1">
-      <h2 className="h3 mb-4">
+    <div className="my-12">
+      <h2 className="h3 mb-12">
         {isUpdating ? 'Update Product' : 'Add Product'}
       </h2>
       <form
@@ -190,14 +190,16 @@ export default function ProductForm({
           </div>
         </div>
       ) : (
-        <button
-          className="block mt-4 px-4 py-2 roundedtransition-colors border border-red-500 text-red-500 hover:bg-red-100 rounded cursor-pointer ml-auto"
-          onClick={() => {
-            setConfirmDelete(true);
-          }}
-        >
-          Delete Product
-        </button>
+        isUpdating && (
+          <button
+            className="block mt-4 px-4 py-2 roundedtransition-colors border border-red-500 text-red-500 hover:bg-red-100 rounded cursor-pointer ml-auto"
+            onClick={() => {
+              setConfirmDelete(true);
+            }}
+          >
+            Delete Product
+          </button>
+        )
       )}
     </div>
   );

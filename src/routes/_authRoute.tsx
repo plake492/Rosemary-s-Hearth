@@ -1,5 +1,6 @@
 import { createFileRoute, Outlet, redirect } from '@tanstack/react-router';
 import { getSessionUser } from '@/utils/getSessionUser';
+import AdminNav from '@/components/AdminDash/AdminNav';
 
 export const Route = createFileRoute('/_authRoute')({
   beforeLoad: async () => {
@@ -11,5 +12,10 @@ export const Route = createFileRoute('/_authRoute')({
 });
 
 function RouteComponent() {
-  return <Outlet />;
+  return (
+    <div className="grid grid-cols-[250px_minmax(0,_1fr)]">
+      <AdminNav />
+      <Outlet />
+    </div>
+  );
 }

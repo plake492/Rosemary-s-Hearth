@@ -1,6 +1,8 @@
 import OrderWindowForm from '@/components/AdminDash/OrderWindowForm';
 import ProductList from '@/components/AdminDash/ProductList';
 import { createFileRoute } from '@tanstack/react-router';
+import MediaTable from '@/components/AdminDash/MediaTable';
+import ModalWrapper from '@/components/ModalWrapper';
 
 export const Route = createFileRoute('/_authRoute/admin-dash')({
   component: RouteComponent,
@@ -19,6 +21,16 @@ function RouteComponent() {
           <ProductList />
         </div>
       </div>
+      <ModalWrapper
+        trigger={
+          <button className="fixed bottom-8 right-8 bg-brown text-cream px-4 py-2 rounded-full shadow-lg hover:bg-brown-dark transition-colors cursor-pointer z-50">
+            Manage Media
+          </button>
+        }
+        className="max-w-4xl bg-white px-8 pb-16"
+      >
+        <MediaTable showAddButton />
+      </ModalWrapper>
     </section>
   );
 }

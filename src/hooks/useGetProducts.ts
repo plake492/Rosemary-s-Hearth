@@ -6,20 +6,27 @@ interface productsWithMedia extends Tables<'product'> {
   media?: Tables<'media'>[];
 }
 
-export default function useGetProducts() {
+export default function useGetProducts({
+  skipUnpublished = true,
+}: {
+  skipUnpublished?: boolean;
+}) {
   const [products, setProducts] = React.useState<productsWithMedia[]>([]);
 
   const fetchProductData = async () => {
     const fetchProducts = async () => {
-      const { data, error } = await supabase
+      let query = supabase
         .from('product')
         .select()
         .order('id', { ascending: true });
+      if (skipUnpublished) {
+        query = query.eq('published', true);
+      }
+      const { data, error } = await query;
       if (error) {
         console.error('Error fetching products:', error);
         return [];
       }
-
       return data;
     };
 
@@ -49,13 +56,29 @@ export default function useGetProducts() {
     setProducts(products || []);
   };
 
+  const handleTogglePublished = async (productId: string) => {
+    const product = products.find((p) => p.uuid === productId);
+    if (!product) return;
+    const newPublishedStatus = !product.published;
+    const { error } = await supabase
+      .from('product')
+      .update({ published: newPublishedStatus })
+      .eq('uuid', productId);
+    if (error) {
+      console.error('Error updating product published status:', error);
+      return;
+    }
+    // Update local state
+    setProducts((prev) =>
+      prev.map((p) =>
+        p.uuid === productId ? { ...p, published: newPublishedStatus } : p,
+      ),
+    );
+  };
+
   React.useEffect(() => {
     fetchProductData();
   }, []);
 
-  React.useEffect(() => {
-    console.log('products ==>', products);
-  }, [products]);
-
-  return { products, setProducts, fetchProductData };
+  return { products, setProducts, fetchProductData, handleTogglePublished };
 }

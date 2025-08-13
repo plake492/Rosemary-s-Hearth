@@ -14,6 +14,7 @@ import { Route as MenuRouteImport } from './routes/menu'
 import { Route as AdminRouteImport } from './routes/admin'
 import { Route as AuthRouteRouteImport } from './routes/_authRoute'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as AuthRouteMediaRouteImport } from './routes/_authRoute/media'
 import { Route as AuthRouteAdminDashRouteImport } from './routes/_authRoute/admin-dash'
 
 const SuperSecretRouteRoute = SuperSecretRouteRouteImport.update({
@@ -40,6 +41,11 @@ const IndexRoute = IndexRouteImport.update({
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AuthRouteMediaRoute = AuthRouteMediaRouteImport.update({
+  id: '/media',
+  path: '/media',
+  getParentRoute: () => AuthRouteRoute,
+} as any)
 const AuthRouteAdminDashRoute = AuthRouteAdminDashRouteImport.update({
   id: '/admin-dash',
   path: '/admin-dash',
@@ -52,6 +58,7 @@ export interface FileRoutesByFullPath {
   '/menu': typeof MenuRoute
   '/superSecretRoute': typeof SuperSecretRouteRoute
   '/admin-dash': typeof AuthRouteAdminDashRoute
+  '/media': typeof AuthRouteMediaRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -59,6 +66,7 @@ export interface FileRoutesByTo {
   '/menu': typeof MenuRoute
   '/superSecretRoute': typeof SuperSecretRouteRoute
   '/admin-dash': typeof AuthRouteAdminDashRoute
+  '/media': typeof AuthRouteMediaRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -68,12 +76,19 @@ export interface FileRoutesById {
   '/menu': typeof MenuRoute
   '/superSecretRoute': typeof SuperSecretRouteRoute
   '/_authRoute/admin-dash': typeof AuthRouteAdminDashRoute
+  '/_authRoute/media': typeof AuthRouteMediaRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/admin' | '/menu' | '/superSecretRoute' | '/admin-dash'
+  fullPaths:
+    | '/'
+    | '/admin'
+    | '/menu'
+    | '/superSecretRoute'
+    | '/admin-dash'
+    | '/media'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/admin' | '/menu' | '/superSecretRoute' | '/admin-dash'
+  to: '/' | '/admin' | '/menu' | '/superSecretRoute' | '/admin-dash' | '/media'
   id:
     | '__root__'
     | '/'
@@ -82,6 +97,7 @@ export interface FileRouteTypes {
     | '/menu'
     | '/superSecretRoute'
     | '/_authRoute/admin-dash'
+    | '/_authRoute/media'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -129,6 +145,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/_authRoute/media': {
+      id: '/_authRoute/media'
+      path: '/media'
+      fullPath: '/media'
+      preLoaderRoute: typeof AuthRouteMediaRouteImport
+      parentRoute: typeof AuthRouteRoute
+    }
     '/_authRoute/admin-dash': {
       id: '/_authRoute/admin-dash'
       path: '/admin-dash'
@@ -141,10 +164,12 @@ declare module '@tanstack/react-router' {
 
 interface AuthRouteRouteChildren {
   AuthRouteAdminDashRoute: typeof AuthRouteAdminDashRoute
+  AuthRouteMediaRoute: typeof AuthRouteMediaRoute
 }
 
 const AuthRouteRouteChildren: AuthRouteRouteChildren = {
   AuthRouteAdminDashRoute: AuthRouteAdminDashRoute,
+  AuthRouteMediaRoute: AuthRouteMediaRoute,
 }
 
 const AuthRouteRouteWithChildren = AuthRouteRoute._addFileChildren(

@@ -3,7 +3,9 @@ import { supabase } from '@/lib/supabase';
 
 const DayOptions = () => (
   <>
-    <option value="">Select a day</option>
+    <option value="" disabled>
+      Select a day
+    </option>
     <option value={0}>Sunday</option>
     <option value={1}>Monday</option>
     <option value={2}>Tuesday</option>
