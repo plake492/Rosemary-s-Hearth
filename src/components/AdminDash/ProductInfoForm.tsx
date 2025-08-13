@@ -5,14 +5,10 @@ export default function ProductForm({
   fetchProductData,
   product,
   isUpdating,
-  setFormStep,
-  formStep,
 }: {
   fetchProductData: () => Promise<void>;
   product?: any;
   isUpdating?: boolean;
-  setFormStep?: () => void;
-  formStep?: 0 | 1;
 }) {
   const [productForm, setProductForm] = React.useState(
     product || {
@@ -71,7 +67,6 @@ export default function ProductForm({
       await fetchProductData();
     }
     setProductLoading(false);
-    setFormStep && setFormStep();
   };
 
   const handleProductChange = (
@@ -142,11 +137,10 @@ export default function ProductForm({
                 ? 'Update Product'
                 : 'Add Product'}
           </button>
-          {isUpdating && productForm.uuid && setFormStep && formStep === 0 && (
+          {isUpdating && productForm.uuid && (
             <button
               type="button"
               className="flex items-center gap-2 text-brown-700 hover:text-brown-900 transition-colors cursor-pointer"
-              onClick={setFormStep}
             >
               <span className="mr-2">Update Photos</span>
               <svg

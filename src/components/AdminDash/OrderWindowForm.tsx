@@ -91,7 +91,6 @@ export default function OrderWindowForm() {
 
   return (
     <div>
-      <p className="h3 mb-4">Update Time</p>
       <form className="mt-6" onSubmit={handleSubmit}>
         <div
           className="flex flex-col gap-4 max-w-md"

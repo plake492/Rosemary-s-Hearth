@@ -1,29 +1,35 @@
 import React from 'react';
+import { FileUploader } from 'react-drag-drop-files';
 import IconButton from '@/components/IconButton';
 import { BaselineDelete } from '@/components/Svg';
-import { FileUploader } from 'react-drag-drop-files';
 import useMediaPicker from '@/hooks/useMediaPicker';
 import type { Tables } from '../../../database.types';
+import {
+  updateMediaItem,
+  uploadMedia,
+} from '../../routes/_dashboard/_actions/mediaActions';
+
+interface MediaFormProps {
+  closeModal: (value: boolean) => void;
+  isUpdating?: boolean;
+  item?: Tables<'media'>;
+}
 
 export default function MediaForm({
   closeModal,
   isUpdating,
   item,
-}: {
-  closeModal: (value: boolean) => void;
-  isUpdating?: boolean;
-  item?: Tables<'media'>;
-}) {
+}: MediaFormProps) {
+  const { refreshMedia } = useMediaPicker();
+
+  const [imageFile, setImageFile] = React.useState<File | null>(null);
+  const [mediaMessage, setMediaMessage] = React.useState('');
+  const [mediaLoading, setMediaLoading] = React.useState(false);
   const [mediaName, setMediaName] = React.useState(item?.name || '');
   const [altText, setAltText] = React.useState(item?.alt || '');
   const [previewUrl, setPreviewUrl] = React.useState<string | null>(
     item?.url || null,
   );
-  const [imageFile, setImageFile] = React.useState<File | null>(null);
-  const [mediaMessage, setMediaMessage] = React.useState('');
-  const [mediaLoading, setMediaLoading] = React.useState(false);
-
-  const { uploadMedia, updateMediaItem } = useMediaPicker();
 
   React.useEffect(() => {
     const id = setTimeout(() => {
@@ -55,13 +61,14 @@ export default function MediaForm({
       await uploadMedia({ file: imageFile, name: mediaName, alt: altText });
     } catch (error) {
       setMediaMessage('Error uploading media. Please try again.');
-    } finally {
     }
   };
 
   const onSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
+      setMediaLoading(true);
+
       if (!mediaName) {
         setMediaMessage('Please provide a name for the media item.');
         return;
@@ -81,6 +88,7 @@ export default function MediaForm({
       }
 
       closeModal(true);
+      await refreshMedia();
     } catch (error) {
       setMediaMessage('Error processing request. Please try again.');
     } finally {
@@ -155,7 +163,7 @@ export default function MediaForm({
           )}
         </div>
 
-        <label className="flex flex-col gap-1 mb-6">
+        <label className="flex flex-col gap-1 mb-6 color-brown-700">
           <span>Alt</span>
           <input
             type="text"

@@ -1,7 +1,6 @@
 import React from 'react';
 import ModalWrapper from '../ModalWrapper';
 import ProductForm from './ProductInfoForm';
-import MediaForm from './MediaForm';
 import { wait } from '@/utils/helpers';
 import { SpinningLoader } from '../Svg';
 
@@ -9,14 +8,10 @@ export default function Product({
   product,
   handleTogglePublished,
   fetchProductData,
-  formStep,
-  setFormStep,
 }: {
   product: any;
   handleTogglePublished: (id: string) => void;
   fetchProductData: () => Promise<void>;
-  formStep: 0 | 1;
-  setFormStep: (step: 0 | 1) => void;
 }) {
   const [loadingPublishedState, setloadingPublishedState] =
     React.useState<boolean>(false);
@@ -64,21 +59,11 @@ export default function Product({
           }
           className="max-w-lg"
         >
-          {/* {formStep === 0 && ( */}
           <div className="grid grid-cols-2 gap-4">
             <ProductForm
               product={product}
               fetchProductData={fetchProductData}
               isUpdating
-              setFormStep={() => setFormStep(1)}
-              formStep={formStep}
-            />
-            {/* )} */}
-            {/* {formStep === 1 && ( */}
-            <MediaForm
-              product={product}
-              isUpdating
-              setFormStep={() => setFormStep(0)}
             />
           </div>
           {/* )} */}

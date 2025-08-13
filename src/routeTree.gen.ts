@@ -14,6 +14,8 @@ import { Route as AdminRouteImport } from './routes/admin'
 import { Route as DashboardRouteImport } from './routes/_dashboard'
 import { Route as AppRouteImport } from './routes/_app'
 import { Route as AppIndexRouteImport } from './routes/_app/index'
+import { Route as DashboardProductsRouteImport } from './routes/_dashboard/products'
+import { Route as DashboardOrderWindowRouteImport } from './routes/_dashboard/order-window'
 import { Route as DashboardMediaRouteImport } from './routes/_dashboard/media'
 import { Route as DashboardAdminDashRouteImport } from './routes/_dashboard/admin-dash'
 import { Route as AppMenuRouteImport } from './routes/_app/menu'
@@ -41,6 +43,16 @@ const AppIndexRoute = AppIndexRouteImport.update({
   path: '/',
   getParentRoute: () => AppRoute,
 } as any)
+const DashboardProductsRoute = DashboardProductsRouteImport.update({
+  id: '/products',
+  path: '/products',
+  getParentRoute: () => DashboardRoute,
+} as any)
+const DashboardOrderWindowRoute = DashboardOrderWindowRouteImport.update({
+  id: '/order-window',
+  path: '/order-window',
+  getParentRoute: () => DashboardRoute,
+} as any)
 const DashboardMediaRoute = DashboardMediaRouteImport.update({
   id: '/media',
   path: '/media',
@@ -63,6 +75,8 @@ export interface FileRoutesByFullPath {
   '/menu': typeof AppMenuRoute
   '/admin-dash': typeof DashboardAdminDashRoute
   '/media': typeof DashboardMediaRoute
+  '/order-window': typeof DashboardOrderWindowRoute
+  '/products': typeof DashboardProductsRoute
   '/': typeof AppIndexRoute
 }
 export interface FileRoutesByTo {
@@ -71,6 +85,8 @@ export interface FileRoutesByTo {
   '/menu': typeof AppMenuRoute
   '/admin-dash': typeof DashboardAdminDashRoute
   '/media': typeof DashboardMediaRoute
+  '/order-window': typeof DashboardOrderWindowRoute
+  '/products': typeof DashboardProductsRoute
   '/': typeof AppIndexRoute
 }
 export interface FileRoutesById {
@@ -82,6 +98,8 @@ export interface FileRoutesById {
   '/_app/menu': typeof AppMenuRoute
   '/_dashboard/admin-dash': typeof DashboardAdminDashRoute
   '/_dashboard/media': typeof DashboardMediaRoute
+  '/_dashboard/order-window': typeof DashboardOrderWindowRoute
+  '/_dashboard/products': typeof DashboardProductsRoute
   '/_app/': typeof AppIndexRoute
 }
 export interface FileRouteTypes {
@@ -92,9 +110,19 @@ export interface FileRouteTypes {
     | '/menu'
     | '/admin-dash'
     | '/media'
+    | '/order-window'
+    | '/products'
     | '/'
   fileRoutesByTo: FileRoutesByTo
-  to: '/admin' | '/superSecretRoute' | '/menu' | '/admin-dash' | '/media' | '/'
+  to:
+    | '/admin'
+    | '/superSecretRoute'
+    | '/menu'
+    | '/admin-dash'
+    | '/media'
+    | '/order-window'
+    | '/products'
+    | '/'
   id:
     | '__root__'
     | '/_app'
@@ -104,6 +132,8 @@ export interface FileRouteTypes {
     | '/_app/menu'
     | '/_dashboard/admin-dash'
     | '/_dashboard/media'
+    | '/_dashboard/order-window'
+    | '/_dashboard/products'
     | '/_app/'
   fileRoutesById: FileRoutesById
 }
@@ -151,6 +181,20 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AppIndexRouteImport
       parentRoute: typeof AppRoute
     }
+    '/_dashboard/products': {
+      id: '/_dashboard/products'
+      path: '/products'
+      fullPath: '/products'
+      preLoaderRoute: typeof DashboardProductsRouteImport
+      parentRoute: typeof DashboardRoute
+    }
+    '/_dashboard/order-window': {
+      id: '/_dashboard/order-window'
+      path: '/order-window'
+      fullPath: '/order-window'
+      preLoaderRoute: typeof DashboardOrderWindowRouteImport
+      parentRoute: typeof DashboardRoute
+    }
     '/_dashboard/media': {
       id: '/_dashboard/media'
       path: '/media'
@@ -190,11 +234,15 @@ const AppRouteWithChildren = AppRoute._addFileChildren(AppRouteChildren)
 interface DashboardRouteChildren {
   DashboardAdminDashRoute: typeof DashboardAdminDashRoute
   DashboardMediaRoute: typeof DashboardMediaRoute
+  DashboardOrderWindowRoute: typeof DashboardOrderWindowRoute
+  DashboardProductsRoute: typeof DashboardProductsRoute
 }
 
 const DashboardRouteChildren: DashboardRouteChildren = {
   DashboardAdminDashRoute: DashboardAdminDashRoute,
   DashboardMediaRoute: DashboardMediaRoute,
+  DashboardOrderWindowRoute: DashboardOrderWindowRoute,
+  DashboardProductsRoute: DashboardProductsRoute,
 }
 
 const DashboardRouteWithChildren = DashboardRoute._addFileChildren(

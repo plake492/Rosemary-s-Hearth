@@ -1,38 +1,62 @@
-import React from 'react';
+import * as React from 'react';
 import { OutlineModeEdit, BaselineDelete } from '../Svg';
+import DataSearchBar from './DataSearchBar';
 import IconButton from '../IconButton';
 import ModalWrapper from '../ModalWrapper';
 import type { Tables } from '../../../database.types';
 import useMediaPicker from '@/hooks/useMediaPicker';
 import MediaForm from './MediaForm';
 import DeleteConfirmation from './DeleteConfirmation';
+import { deleteMediaItem } from '../../routes/_dashboard/_actions/mediaActions';
 
 export default function MediaTable({
   showAddButton = false,
 }: {
   showAddButton?: boolean;
 }) {
-  const { mediaItems, filterMediaItems, deleteMediaItem } = useMediaPicker();
+  const { refreshMedia, mediaItems, mediaItemsFull, setMediaItems } =
+    useMediaPicker();
+
+  const [closeOverride, setCloseOverride] = React.useState(false);
   const [idToDelete, setIdToDelete] = React.useState<string | null>(null);
   const [itemToEdit, setItemToEdit] = React.useState<
     Tables<'media'> | undefined
   >(undefined);
 
+  React.useEffect(() => {
+    refreshMedia();
+  }, []);
+
+  // Filter function
+  const filterMediaItems = (input: string) => {
+    const normalizedInput = input.replace(/\s+/g, '').toLowerCase();
+    const filtered = mediaItemsFull.filter((item) => {
+      // Combine item name and all nested product names into a single string
+      const names = [
+        item.name || '',
+        ...(item.product_media
+          ? Array.isArray(item.product_media)
+            ? item.product_media.map((pm: any) => pm.product?.name || '')
+            : [item.product_media.product?.name || '']
+          : []),
+      ];
+      const combinedNames = names.join(' ').replace(/\s+/g, '').toLowerCase();
+      return combinedNames.includes(normalizedInput);
+    });
+    setMediaItems(filtered);
+  };
+
   return (
     <>
-      <div className="p-4 bg-white rounded">
-        <div className="sticky top-0 bg-white z-10 pt-4 pb-2">
-          <div className="flex justify-start items-center mb-3 mt-4">
-            <h4 className="mb-2 px-4">Media Items</h4>
-            <input
-              type="text"
-              placeholder="Search media by name..."
-              className="w-full max-w-[400px] px-3 py-2 border rounded"
-              onChange={(e) => filterMediaItems(e.target.value)}
-            />
-          </div>
+      <div className="p-4 bg-white rounded-md">
+        <div className="sticky top-0 bg-white z-10 pt-2 pb-2">
+          <DataSearchBar
+            onFilterChange={(e) => filterMediaItems(e.target.value)}
+            DataTable={<MediaForm closeModal={setCloseOverride} />}
+            closeOverride={closeOverride}
+          />
 
-          <div className="mb-0 pb-2 pt-6 grid grid-cols-4 gap-4 items-center px-4  border-b-2 font-semibold">
+          <div className="mb-0 pb-2 pt-3 grid grid-cols-4 gap-4 items-center px-4  border-b-2 font-semibold">
             <div className="h5 uppercase">Image</div>
             <div className="h5 uppercase">Name</div>
             <div className="h5 uppercase">Product</div>
