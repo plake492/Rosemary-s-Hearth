@@ -4,7 +4,7 @@ import MediaTable from '@/components/AdminDash/MediaTable';
 import ModalWrapper from '@/components/ModalWrapper';
 import MediaForm from '@/components/AdminDash/MediaForm';
 
-export const Route = createFileRoute('/_authRoute/media')({
+export const Route = createFileRoute('/_dashboard/media')({
   component: RouteComponent,
 });
 

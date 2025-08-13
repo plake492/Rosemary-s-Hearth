@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { useOrderWindowCountdown } from '@/hooks/useOrderWindowCountdown';
 import { shopLink } from '@/lib/constants';
-import { RosemaryAlt } from './Icons';
+import { RosemaryAlt } from '../Icons';
 import { useLayoutStore } from '@/state/layoutStore';
 
 export default function Navbar() {

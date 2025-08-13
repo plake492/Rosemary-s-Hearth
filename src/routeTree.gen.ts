@@ -10,21 +10,17 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as SuperSecretRouteRouteImport } from './routes/superSecretRoute'
-import { Route as MenuRouteImport } from './routes/menu'
 import { Route as AdminRouteImport } from './routes/admin'
-import { Route as AuthRouteRouteImport } from './routes/_authRoute'
-import { Route as IndexRouteImport } from './routes/index'
-import { Route as AuthRouteMediaRouteImport } from './routes/_authRoute/media'
-import { Route as AuthRouteAdminDashRouteImport } from './routes/_authRoute/admin-dash'
+import { Route as DashboardRouteImport } from './routes/_dashboard'
+import { Route as AppRouteImport } from './routes/_app'
+import { Route as AppIndexRouteImport } from './routes/_app/index'
+import { Route as DashboardMediaRouteImport } from './routes/_dashboard/media'
+import { Route as DashboardAdminDashRouteImport } from './routes/_dashboard/admin-dash'
+import { Route as AppMenuRouteImport } from './routes/_app/menu'
 
 const SuperSecretRouteRoute = SuperSecretRouteRouteImport.update({
   id: '/superSecretRoute',
   path: '/superSecretRoute',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const MenuRoute = MenuRouteImport.update({
-  id: '/menu',
-  path: '/menu',
   getParentRoute: () => rootRouteImport,
 } as any)
 const AdminRoute = AdminRouteImport.update({
@@ -32,79 +28,89 @@ const AdminRoute = AdminRouteImport.update({
   path: '/admin',
   getParentRoute: () => rootRouteImport,
 } as any)
-const AuthRouteRoute = AuthRouteRouteImport.update({
-  id: '/_authRoute',
+const DashboardRoute = DashboardRouteImport.update({
+  id: '/_dashboard',
   getParentRoute: () => rootRouteImport,
 } as any)
-const IndexRoute = IndexRouteImport.update({
+const AppRoute = AppRouteImport.update({
+  id: '/_app',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AppIndexRoute = AppIndexRouteImport.update({
   id: '/',
   path: '/',
-  getParentRoute: () => rootRouteImport,
+  getParentRoute: () => AppRoute,
 } as any)
-const AuthRouteMediaRoute = AuthRouteMediaRouteImport.update({
+const DashboardMediaRoute = DashboardMediaRouteImport.update({
   id: '/media',
   path: '/media',
-  getParentRoute: () => AuthRouteRoute,
+  getParentRoute: () => DashboardRoute,
 } as any)
-const AuthRouteAdminDashRoute = AuthRouteAdminDashRouteImport.update({
+const DashboardAdminDashRoute = DashboardAdminDashRouteImport.update({
   id: '/admin-dash',
   path: '/admin-dash',
-  getParentRoute: () => AuthRouteRoute,
+  getParentRoute: () => DashboardRoute,
+} as any)
+const AppMenuRoute = AppMenuRouteImport.update({
+  id: '/menu',
+  path: '/menu',
+  getParentRoute: () => AppRoute,
 } as any)
 
 export interface FileRoutesByFullPath {
-  '/': typeof IndexRoute
   '/admin': typeof AdminRoute
-  '/menu': typeof MenuRoute
   '/superSecretRoute': typeof SuperSecretRouteRoute
-  '/admin-dash': typeof AuthRouteAdminDashRoute
-  '/media': typeof AuthRouteMediaRoute
+  '/menu': typeof AppMenuRoute
+  '/admin-dash': typeof DashboardAdminDashRoute
+  '/media': typeof DashboardMediaRoute
+  '/': typeof AppIndexRoute
 }
 export interface FileRoutesByTo {
-  '/': typeof IndexRoute
   '/admin': typeof AdminRoute
-  '/menu': typeof MenuRoute
   '/superSecretRoute': typeof SuperSecretRouteRoute
-  '/admin-dash': typeof AuthRouteAdminDashRoute
-  '/media': typeof AuthRouteMediaRoute
+  '/menu': typeof AppMenuRoute
+  '/admin-dash': typeof DashboardAdminDashRoute
+  '/media': typeof DashboardMediaRoute
+  '/': typeof AppIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
-  '/': typeof IndexRoute
-  '/_authRoute': typeof AuthRouteRouteWithChildren
+  '/_app': typeof AppRouteWithChildren
+  '/_dashboard': typeof DashboardRouteWithChildren
   '/admin': typeof AdminRoute
-  '/menu': typeof MenuRoute
   '/superSecretRoute': typeof SuperSecretRouteRoute
-  '/_authRoute/admin-dash': typeof AuthRouteAdminDashRoute
-  '/_authRoute/media': typeof AuthRouteMediaRoute
+  '/_app/menu': typeof AppMenuRoute
+  '/_dashboard/admin-dash': typeof DashboardAdminDashRoute
+  '/_dashboard/media': typeof DashboardMediaRoute
+  '/_app/': typeof AppIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
-    | '/'
     | '/admin'
-    | '/menu'
     | '/superSecretRoute'
+    | '/menu'
     | '/admin-dash'
     | '/media'
+    | '/'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/admin' | '/menu' | '/superSecretRoute' | '/admin-dash' | '/media'
+  to: '/admin' | '/superSecretRoute' | '/menu' | '/admin-dash' | '/media' | '/'
   id:
     | '__root__'
-    | '/'
-    | '/_authRoute'
+    | '/_app'
+    | '/_dashboard'
     | '/admin'
-    | '/menu'
     | '/superSecretRoute'
-    | '/_authRoute/admin-dash'
-    | '/_authRoute/media'
+    | '/_app/menu'
+    | '/_dashboard/admin-dash'
+    | '/_dashboard/media'
+    | '/_app/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
-  IndexRoute: typeof IndexRoute
-  AuthRouteRoute: typeof AuthRouteRouteWithChildren
+  AppRoute: typeof AppRouteWithChildren
+  DashboardRoute: typeof DashboardRouteWithChildren
   AdminRoute: typeof AdminRoute
-  MenuRoute: typeof MenuRoute
   SuperSecretRouteRoute: typeof SuperSecretRouteRoute
 }
 
@@ -117,13 +123,6 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof SuperSecretRouteRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/menu': {
-      id: '/menu'
-      path: '/menu'
-      fullPath: '/menu'
-      preLoaderRoute: typeof MenuRouteImport
-      parentRoute: typeof rootRouteImport
-    }
     '/admin': {
       id: '/admin'
       path: '/admin'
@@ -131,56 +130,81 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AdminRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/_authRoute': {
-      id: '/_authRoute'
+    '/_dashboard': {
+      id: '/_dashboard'
       path: ''
       fullPath: ''
-      preLoaderRoute: typeof AuthRouteRouteImport
+      preLoaderRoute: typeof DashboardRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/': {
-      id: '/'
+    '/_app': {
+      id: '/_app'
+      path: ''
+      fullPath: ''
+      preLoaderRoute: typeof AppRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/_app/': {
+      id: '/_app/'
       path: '/'
       fullPath: '/'
-      preLoaderRoute: typeof IndexRouteImport
-      parentRoute: typeof rootRouteImport
+      preLoaderRoute: typeof AppIndexRouteImport
+      parentRoute: typeof AppRoute
     }
-    '/_authRoute/media': {
-      id: '/_authRoute/media'
+    '/_dashboard/media': {
+      id: '/_dashboard/media'
       path: '/media'
       fullPath: '/media'
-      preLoaderRoute: typeof AuthRouteMediaRouteImport
-      parentRoute: typeof AuthRouteRoute
+      preLoaderRoute: typeof DashboardMediaRouteImport
+      parentRoute: typeof DashboardRoute
     }
-    '/_authRoute/admin-dash': {
-      id: '/_authRoute/admin-dash'
+    '/_dashboard/admin-dash': {
+      id: '/_dashboard/admin-dash'
       path: '/admin-dash'
       fullPath: '/admin-dash'
-      preLoaderRoute: typeof AuthRouteAdminDashRouteImport
-      parentRoute: typeof AuthRouteRoute
+      preLoaderRoute: typeof DashboardAdminDashRouteImport
+      parentRoute: typeof DashboardRoute
+    }
+    '/_app/menu': {
+      id: '/_app/menu'
+      path: '/menu'
+      fullPath: '/menu'
+      preLoaderRoute: typeof AppMenuRouteImport
+      parentRoute: typeof AppRoute
     }
   }
 }
 
-interface AuthRouteRouteChildren {
-  AuthRouteAdminDashRoute: typeof AuthRouteAdminDashRoute
-  AuthRouteMediaRoute: typeof AuthRouteMediaRoute
+interface AppRouteChildren {
+  AppMenuRoute: typeof AppMenuRoute
+  AppIndexRoute: typeof AppIndexRoute
 }
 
-const AuthRouteRouteChildren: AuthRouteRouteChildren = {
-  AuthRouteAdminDashRoute: AuthRouteAdminDashRoute,
-  AuthRouteMediaRoute: AuthRouteMediaRoute,
+const AppRouteChildren: AppRouteChildren = {
+  AppMenuRoute: AppMenuRoute,
+  AppIndexRoute: AppIndexRoute,
 }
 
-const AuthRouteRouteWithChildren = AuthRouteRoute._addFileChildren(
-  AuthRouteRouteChildren,
+const AppRouteWithChildren = AppRoute._addFileChildren(AppRouteChildren)
+
+interface DashboardRouteChildren {
+  DashboardAdminDashRoute: typeof DashboardAdminDashRoute
+  DashboardMediaRoute: typeof DashboardMediaRoute
+}
+
+const DashboardRouteChildren: DashboardRouteChildren = {
+  DashboardAdminDashRoute: DashboardAdminDashRoute,
+  DashboardMediaRoute: DashboardMediaRoute,
+}
+
+const DashboardRouteWithChildren = DashboardRoute._addFileChildren(
+  DashboardRouteChildren,
 )
 
 const rootRouteChildren: RootRouteChildren = {
-  IndexRoute: IndexRoute,
-  AuthRouteRoute: AuthRouteRouteWithChildren,
+  AppRoute: AppRouteWithChildren,
+  DashboardRoute: DashboardRouteWithChildren,
   AdminRoute: AdminRoute,
-  MenuRoute: MenuRoute,
   SuperSecretRouteRoute: SuperSecretRouteRoute,
 }
 export const routeTree = rootRouteImport

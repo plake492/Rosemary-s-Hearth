@@ -1,10 +1,10 @@
-import OrderWindowForm from '@/components/AdminDash/OrderWindowForm';
+// import OrderWindowForm from '@/components/AdminDash/OrderWindowForm';
 import ProductList from '@/components/AdminDash/ProductList';
 import { createFileRoute } from '@tanstack/react-router';
 import MediaTable from '@/components/AdminDash/MediaTable';
 import ModalWrapper from '@/components/ModalWrapper';
 
-export const Route = createFileRoute('/_authRoute/admin-dash')({
+export const Route = createFileRoute('/_dashboard/admin-dash')({
   component: RouteComponent,
 });
 
@@ -16,10 +16,10 @@ function RouteComponent() {
           <h1 className="h1">Admin Dash</h1>
           <hr />
         </div>
-        <div className="grid grid-cols-2 mt-8">
-          <OrderWindowForm />
-          <ProductList />
-        </div>
+        {/* <div className="grid grid-cols-2 mt-8"> */}
+        {/* <OrderWindowForm /> */}
+        <ProductList />
+        {/* </div> */}
       </div>
       <ModalWrapper
         trigger={
