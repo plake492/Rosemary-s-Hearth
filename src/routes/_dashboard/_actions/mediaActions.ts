@@ -98,7 +98,6 @@ export const deleteMediaItem = async (uuid: string) => {
   let filePath = '';
   try {
     const url = mediaData.url;
-    // Example: https://xyz.supabase.co/storage/v1/object/public/product-photos/filename.jpg
     const parts = url.split('/product-photos/');
     if (parts.length === 2) {
       filePath = parts[1];

@@ -1,26 +1,29 @@
 import React from 'react';
-import { FileUploader } from 'react-drag-drop-files';
 import IconButton from '@/components/IconButton';
+import useHandleMedia from '@/hooks/useHandleMedia';
+import { FileUploader } from 'react-drag-drop-files';
 import { BaselineDelete } from '@/components/Svg';
-import useMediaPicker from '@/hooks/useMediaPicker';
-import type { Tables } from '../../../database.types';
 import {
   updateMediaItem,
   uploadMedia,
-} from '../../routes/_dashboard/_actions/mediaActions';
+} from '@/routes/_dashboard/_actions/mediaActions';
+import type { Tables } from '../../../../database.types';
 
 interface MediaFormProps {
-  closeModal: (value: boolean) => void;
+  setShowModal: (value: boolean) => void;
   isUpdating?: boolean;
   item?: Tables<'media'>;
+  label?: string;
+  Stepper?: React.ReactNode; // Optional Stepper component
 }
 
 export default function MediaForm({
-  closeModal,
+  setShowModal,
   isUpdating,
   item,
+  label,
 }: MediaFormProps) {
-  const { refreshMedia } = useMediaPicker();
+  const { refreshMedia } = useHandleMedia();
 
   const [imageFile, setImageFile] = React.useState<File | null>(null);
   const [mediaMessage, setMediaMessage] = React.useState('');
@@ -87,7 +90,7 @@ export default function MediaForm({
         await handleFileUpload();
       }
 
-      closeModal(true);
+      setShowModal(false);
       await refreshMedia();
     } catch (error) {
       setMediaMessage('Error processing request. Please try again.');
@@ -97,11 +100,9 @@ export default function MediaForm({
   };
 
   return (
-    <div className="my-12">
+    <>
+      {label && <h2 className="h3 mb-12">{label}</h2>}
       <form onSubmit={onSubmit}>
-        <h2 className="h3 mb-12">
-          {isUpdating ? 'Update Media' : 'Add Media'}
-        </h2>
         <div className="grid grid-cols-1 gap-8 mb-8">
           {!isUpdating && (
             <div>
@@ -201,6 +202,6 @@ export default function MediaForm({
 
         {mediaMessage && <p className="text-red-700">{mediaMessage}</p>}
       </form>
-    </div>
+    </>
   );
 }
