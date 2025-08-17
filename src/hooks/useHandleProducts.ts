@@ -22,6 +22,8 @@ export default function useHandleProducts({
     const data = await fetchProductData(skipUnpublished);
     setProductItems(data || []);
     setProductItemsFull(data || []);
+
+    return data || [];
   };
 
   const handleTogglePublished = async (productId: string) => {

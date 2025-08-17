@@ -3,7 +3,7 @@ import DataSearchBar from '../DataSearchBar';
 import useHandleProducts from '@/hooks/useHandleProducts';
 import ModalWrapper from '../../ModalWrapper';
 import Product from './ProductItem';
-import ProductAddFlow from './ProductAddFlow';
+import ProductAddFlow from './ProductFlow';
 
 interface ProductTableProps {
   showStepper?: boolean;
@@ -38,11 +38,7 @@ export default function ProductTable({}: ProductTableProps) {
 
         <ul className="divide-y">
           {productItems.map((product) => (
-            <Product
-              key={product.id}
-              product={product}
-              fetchProductData={refreshProducts}
-            />
+            <Product key={product.id} product={product} />
           ))}
         </ul>
       </div>
@@ -51,6 +47,8 @@ export default function ProductTable({}: ProductTableProps) {
         style={{ maxWidth: '800px' }}
         showModal={showProductModal}
         setShowModal={setShowProductModal}
+        hideCloseButton={true}
+        noCloseOnBackdropClick={true}
       >
         <ProductAddFlow setShowProductModal={setShowProductModal} />
       </ModalWrapper>

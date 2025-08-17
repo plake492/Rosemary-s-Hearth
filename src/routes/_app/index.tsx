@@ -5,7 +5,6 @@ import Products from '@/components/Products/Products';
 import { useLayoutStore } from '@/state/layoutStore';
 import { useMatchMedia } from '@/hooks/useMatchMedia';
 import { fetchProductData } from './_actions/productActions';
-
 // import LinkSection from '@/components/Home/LinkSection';
 
 export const Route = createFileRoute('/_app/')({
@@ -35,7 +34,9 @@ function App() {
           </div>
         </aside>
         <section className="flex-1">
-          {/* <LinkSection /> */}
+          {/* <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-2 xl:grid-cols-3 gap-6">
+            <LinkSection />
+          </div> */}
           <Products items={products} />
         </section>
         <section className="block md:hidden mt-8">

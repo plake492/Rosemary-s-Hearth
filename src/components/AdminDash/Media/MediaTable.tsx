@@ -4,12 +4,15 @@ import ModalWrapper from '../../ModalWrapper';
 import useHandleMedia from '@/hooks/useHandleMedia';
 import MediaForm from './MediaForm';
 import MediaItem from './MediaItem';
+import type { ProductWithMedia } from '@/types';
 
 interface MediaTableProps {
   showAddButton?: boolean;
   hideDeleteButton?: boolean;
   setMediaIds?: React.Dispatch<React.SetStateAction<string[]>>;
   mediaIds?: string[];
+  isUpdatingProductMedia?: boolean;
+  item?: ProductWithMedia;
 }
 
 export default function MediaTable({
@@ -17,33 +20,58 @@ export default function MediaTable({
   showAddButton = false,
   setMediaIds,
   mediaIds,
+  isUpdatingProductMedia,
+  item,
 }: MediaTableProps) {
-  const { refreshMedia, mediaItems, mediaItemsFull, setMediaItems } =
-    useHandleMedia();
-
+  const { refreshMedia, mediaItemsFull } = useHandleMedia();
   const [showAddMediaModal, setShowAddMediaModal] = React.useState(false);
+  const [itemsCopy, setItemsCopy] = React.useState(mediaItemsFull);
+  const [items, setItems] = React.useState(mediaItemsFull);
 
   React.useEffect(() => {
-    refreshMedia();
+    const getMedia = async () => {
+      const data = await refreshMedia();
+      setItems(data || []);
+      setItemsCopy(data || []);
+    };
+    if (mediaItemsFull.length === 0) {
+      getMedia();
+    }
   }, []);
+
+  React.useEffect(() => {
+    if ((mediaItemsFull || (item?.media && item.media.length > 0)) && isUpdatingProductMedia) {
+      const sortedItems = [...items].sort((a, b) => {
+        const aIsSelected = mediaIds?.includes(a.uuid) || false;
+        const bIsSelected = mediaIds?.includes(b.uuid) || false;
+
+        if (aIsSelected && !bIsSelected) return -1;
+        if (!aIsSelected && bIsSelected) return 1;
+        return 0;
+      });
+
+      setItems(sortedItems);
+      setItemsCopy(sortedItems);
+    }
+  }, [isUpdatingProductMedia, mediaItemsFull]);
 
   // Filter function
   const filterMediaItems = (input: string) => {
     const normalizedInput = input.replace(/\s+/g, '').toLowerCase();
-    const filtered = mediaItemsFull.filter((item) => {
+    const filtered = itemsCopy.filter((item) => {
       // Combine item name and all nested product names into a single string
       const names = [
         item.name || '',
-        ...(item.product_media
-          ? Array.isArray(item.product_media)
-            ? item.product_media.map((pm: any) => pm.product?.name || '')
-            : [item.product_media.product?.name || '']
+        ...((item as any).product_media
+          ? Array.isArray((item as any).product_media)
+            ? (item as any).product_media.map((pm: any) => pm.product?.name || '')
+            : [(item as any).product_media.product?.name || '']
           : []),
       ];
       const combinedNames = names.join(' ').replace(/\s+/g, '').toLowerCase();
       return combinedNames.includes(normalizedInput);
     });
-    setMediaItems(filtered);
+    setItems(filtered);
   };
 
   const handleCheckboxChange = (uuid: string) => {
@@ -64,9 +92,7 @@ export default function MediaTable({
     <>
       <>
         <div className="sticky top-0 bg-white z-10 pt-2 pb-2 border-b-2">
-          <DataSearchBar
-            onFilterChange={(e) => filterMediaItems(e.target.value)}
-          >
+          <DataSearchBar onFilterChange={(e) => filterMediaItems(e.target.value)}>
             <button
               className="bg-orange text-cream px-4 py-2 rounded block hover:bg-brown-dark transition-colors cursor-pointer"
               onClick={() => setShowAddMediaModal(true)}
@@ -84,8 +110,8 @@ export default function MediaTable({
           </div>
         </div>
         <ul className="list-disc pt-4">
-          {mediaItems.length > 0 ? (
-            mediaItems.map((item, i, arr) => (
+          {items.length > 0 ? (
+            items.map((item, i, arr) => (
               <MediaItem
                 key={item.uuid}
                 item={item}

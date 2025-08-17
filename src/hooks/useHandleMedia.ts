@@ -9,6 +9,7 @@ export default function useHandleMedia() {
     const data = await fetchMediaItems();
     setMediaItemsFull(data || []);
     setMediaItems(data || []);
+    return data || [];
   };
 
   return {

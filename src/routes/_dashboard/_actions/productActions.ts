@@ -33,9 +33,7 @@ export const fetchProductData = async (skipUnpublished: boolean) => {
   }));
 };
 
-export const createProduct = async (
-  productForm: Partial<Tables<'product'>>,
-) => {
+export const createProduct = async (productForm: Partial<Tables<'product'>>) => {
   const { data, error } = await supabase
     .from('product')
     .upsert(
@@ -46,6 +44,7 @@ export const createProduct = async (
           price: productForm.price,
           description: productForm.description,
           link: productForm.link,
+          status: productForm.status || null,
         },
       ],
       {
@@ -64,10 +63,7 @@ export const updateProductPublishedStatus = async ({
   newPublishedStatus: boolean;
   productId: string;
 }) => {
-  const { error } = await supabase
-    .from('product')
-    .update({ published: newPublishedStatus })
-    .eq('uuid', productId);
+  const { error } = await supabase.from('product').update({ published: newPublishedStatus }).eq('uuid', productId);
   if (error) {
     console.error('Error updating product published status:', error);
     return;
@@ -79,22 +75,13 @@ export const handleDeleteProduct = async (uuid: string) => {
   return { error };
 };
 
-export const updateMediaOnProduct = async ({
-  productId,
-  mediaIds,
-}: {
-  productId: string;
-  mediaIds: string[];
-}) => {
+export const updateMediaOnProduct = async ({ productId, mediaIds }: { productId: string; mediaIds: string[] }) => {
   // First, delete existing media associations for this product
-  const { error: deleteError } = await supabase
-    .from('product_media')
-    .delete()
-    .eq('product_id', productId);
+  const { error: deleteError } = await supabase.from('product_media').delete().eq('product_id', productId);
 
   if (deleteError) {
     console.error('Error deleting existing media associations:', deleteError);
-    return;
+    return { error: deleteError };
   }
 
   // Then, insert new media associations
@@ -105,8 +92,5 @@ export const updateMediaOnProduct = async ({
     })),
   );
 
-  if (error) {
-    console.error('Error adding media to product:', error);
-    return;
-  }
+  return { error };
 };

@@ -8,6 +8,7 @@ type ModalWrapperProps = {
   showModal?: boolean;
   setShowModal?: (value: boolean) => void;
   hideCloseButton?: boolean;
+  noCloseOnBackdropClick?: boolean; // Optional prop to control backdrop click behavior
 };
 
 // Global modal stack for z-index management
@@ -19,7 +20,8 @@ export default function ModalWrapper({
   style,
   showModal,
   setShowModal,
-  hideCloseButton = false,
+  hideCloseButton,
+  noCloseOnBackdropClick,
 }: ModalWrapperProps) {
   const [stackIndex, setStackIndex] = useState(0);
   const modalId = useRef(Math.random());
@@ -73,12 +75,12 @@ export default function ModalWrapper({
     const baseZIndex = 1000;
     const calculatedZIndex = baseZIndex + stackIndex * 10;
 
+    const backdropProps = {
+      onClick: noCloseOnBackdropClick ? closeModal : () => {},
+    };
+
     return createPortal(
-      <div
-        className="modal-backdrop"
-        onClick={closeModal}
-        style={{ zIndex: calculatedZIndex }}
-      >
+      <div className="modal-backdrop" style={{ zIndex: calculatedZIndex }} {...backdropProps}>
         <div
           className={`modal-wrapper max-w-lg bg-white ${className ? className : ''}`}
           style={{
@@ -89,11 +91,7 @@ export default function ModalWrapper({
           onClick={(e) => e.stopPropagation()}
         >
           {!hideCloseButton && (
-            <button
-              className="modal-close"
-              onClick={closeModal}
-              aria-label="Close modal"
-            >
+            <button className="modal-close" onClick={closeModal} aria-label="Close modal">
               &times;
             </button>
           )}

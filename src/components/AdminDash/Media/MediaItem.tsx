@@ -5,10 +5,10 @@ import DeleteConfirmation from '@/components/AdminDash/DeleteConfirmation';
 import MediaForm from './MediaForm';
 import { OutlineModeEdit, BaselineDelete } from '@/components/Svg';
 import { deleteMediaItem } from '../../../routes/_dashboard/_actions/mediaActions';
-import type { Tables } from '../../../../database.types';
+import type { PartialProduct, MediaType } from '@/types';
 
 interface MediaItemProps {
-  item: Tables<'media'>;
+  item: MediaType;
   hideDeleteButton?: boolean;
   handleCheckboxChange?: (uuid: string) => void;
   showAddButton?: boolean;
@@ -25,23 +25,24 @@ export default function MediaItem({
   notLast,
 }: MediaItemProps) {
   const [showEditModal, setShowEditModal] = React.useState(false);
-  const [showDeleteConfirmation, setShowDeleteConfirmation] =
-    React.useState(false);
+  const [showDeleteConfirmation, setShowDeleteConfirmation] = React.useState(false);
+
+  console.log('item ==>', item);
 
   return (
-    <li
-      key={item.id}
-      className="list-none [&:not(:last-child)]:mb-2 pt-2 hover:bg-gray-100 transition-colors"
-    >
+    <li key={item.id} className="list-none [&:not(:last-child)]:mb-2 hover:bg-gray-100 transition-colors">
       <div className="mb-2 grid grid-cols-4 gap-4 items-center pl-2">
-        <img
-          src={item.url}
-          alt={item.alt || 'Media Item'}
-          className="w-32 h-32 object-cover"
-        />
-        <h3>{item.name}</h3>
+        <img src={item.url} alt={item.alt || 'Media Item'} className="w-32 h-32 object-cover" />
+        <h4>{item.name}</h4>
         <div>
-          {item.product_media?.product?.name}
+          {(item as any).product_media &&
+            (item as any).product_media.length > 0 &&
+            (item as any).product_media.map(({ product }: { product: PartialProduct }, i: number) => (
+              <div key={product.uuid} className="text-sm text-gray-600">
+                {product.name} {i < (item as any).product_media.length - 1 ? ',' : ''}
+              </div>
+            ))}
+          {/* {item.product_media?.product?.name} */}
           {/* {item.product_media?.product &&
                     Object.keys(item.product_media.product).map((key) => (
                       <div key={key} className="mb-2">
@@ -91,12 +92,7 @@ export default function MediaItem({
         style={{ maxWidth: '600px' }}
         className="max-w-4xl bg-white px-8 py-16 pr-16"
       >
-        <MediaForm
-          item={item}
-          isUpdating
-          setShowModal={setShowEditModal}
-          label={'Update Product'}
-        />
+        <MediaForm item={item} isUpdating setShowModal={setShowEditModal} label={'Update Product'} />
       </ModalWrapper>
       <ModalWrapper
         showModal={showDeleteConfirmation}
