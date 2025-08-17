@@ -113,7 +113,7 @@ export default function ProductItem({ product }: ProductProps) {
         showModal={showDeleteConfirmation}
         setShowModal={() => setShowDeleteConfirmation(false)}
         style={{ maxWidth: '600px', maxHeight: 'unset', minHeight: 'unset' }}
-        className="max-w-4xl bg-white  py-16 px-8"
+        className="max-w-4xl bg-white py-16 px-8"
       >
         <DeleteConfirmation
           onConfirm={handleDelete}

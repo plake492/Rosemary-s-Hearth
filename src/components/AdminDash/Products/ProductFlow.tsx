@@ -7,7 +7,8 @@ import MediaTableProductButton from '../Media/MediaTableProductButton';
 import Stepper from '../Stepper';
 import ProductForm from './ProductForm';
 import ProductReview from './ProductReview';
-// import type { Tables } from '../../../../database.types';
+import Button from '@/components/Button';
+
 import type { ProductWithMedia, PartialProduct, MediaType, ProductStatus } from '@/types';
 
 const config = [
@@ -146,30 +147,21 @@ export default function ProductFlow({ setShowProductModal, item, editing }: Prod
       <div className="absolute top-0 right-0 mr-8 mt-16 flex justify-between  items-start gap-4">
         {editing ? (
           <>
-            <button
-              className="bg-cream text-orange-900 px-4 py-2 rounded disabled:opacity-50 cursor-pointer border-orange-900 border"
-              onClick={() => setShowProductModal(false)}
-            >
+            <Button variant="error-border" className="cursor-pointer" onClick={() => setShowProductModal(false)}>
               Discard Changes
-            </button>
-            <button
-              className="bg-brown text-cream px-4 py-2 rounded block hover:bg-brown-dark transition-colors cursor-pointer"
-              onClick={() => handleComplete('complete')}
-            >
+            </Button>
+            <Button className="cursor-pointer" onClick={() => handleComplete('complete')}>
               Save & Close
-            </button>
+            </Button>
           </>
         ) : (
           <>
-            <button className=" text-orange-900 px-4 py-2 cursor-pointer" onClick={() => setShowProductModal(false)}>
+            <Button onClick={() => setShowProductModal(false)} variant="border" className="cursor-pointer">
               Discard
-            </button>
-            <button
-              className="bg-cream text-orange-900 px-4 py-2 rounded disabled:opacity-50 cursor-pointer border-orange-900 border"
-              onClick={() => handleComplete('draft')}
-            >
+            </Button>
+            <Button onClick={() => handleComplete('draft')} className="cursor-pointer">
               Save as Draft
-            </button>
+            </Button>
           </>
         )}
       </div>

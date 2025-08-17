@@ -1,22 +1,12 @@
-import {
-  fetchProductData,
-  updateProductPublishedStatus,
-} from '@/routes/_dashboard/_actions/productActions';
+import { fetchProductData, updateProductPublishedStatus } from '@/routes/_dashboard/_actions/productActions';
 import { useProductStore } from '@/state/useProductStore';
 
 interface useHandleProductsProps {
   skipUnpublished?: boolean;
 }
 
-export default function useHandleProducts({
-  skipUnpublished = true,
-}: useHandleProductsProps) {
-  const {
-    productItems,
-    productItemsFull,
-    setProductItems,
-    setProductItemsFull,
-  } = useProductStore();
+export default function useHandleProducts({ skipUnpublished = true }: useHandleProductsProps) {
+  const { productItems, productItemsFull, setProductItems, setProductItemsFull } = useProductStore();
 
   const refreshProducts = async () => {
     const data = await fetchProductData(skipUnpublished);
@@ -41,9 +31,7 @@ export default function useHandleProducts({
       p.uuid === productId ? { ...p, published: newPublishedStatus } : p,
     );
 
-    const updatedProductItems = skipUnpublished
-      ? updatedProductsFull.filter((p) => p.published)
-      : updatedProductsFull;
+    const updatedProductItems = skipUnpublished ? updatedProductsFull.filter((p) => p.published) : updatedProductsFull;
 
     setProductItemsFull(updatedProductsFull);
     setProductItems(updatedProductItems);
@@ -51,7 +39,9 @@ export default function useHandleProducts({
 
   return {
     productItems,
+    setProductItems,
     productItemsFull,
+    setProductItemsFull,
     refreshProducts,
     handleTogglePublished,
   };

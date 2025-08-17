@@ -4,6 +4,7 @@ import ModalWrapper from '../../ModalWrapper';
 import useHandleMedia from '@/hooks/useHandleMedia';
 import MediaForm from './MediaForm';
 import MediaItem from './MediaItem';
+import Button from '@/components/Button';
 import type { ProductWithMedia } from '@/types';
 
 interface MediaTableProps {
@@ -93,13 +94,15 @@ export default function MediaTable({
       <>
         <div className="sticky top-0 bg-white z-10 pt-2 pb-2 border-b-2">
           <DataSearchBar onFilterChange={(e) => filterMediaItems(e.target.value)}>
-            <button
-              className="bg-orange text-cream px-4 py-2 rounded block hover:bg-brown-dark transition-colors cursor-pointer"
+            <Button
               onClick={() => setShowAddMediaModal(true)}
               aria-label="Add Media Item"
+              className="cursor-pointer"
+              variant="primary"
+              size="md"
             >
               Add Media
-            </button>
+            </Button>
           </DataSearchBar>
 
           <div className="mb-0 pb-2 pt-3 grid grid-cols-4 gap-4 items-center px-4 font-semibold">

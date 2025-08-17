@@ -1,9 +1,10 @@
 import React from 'react';
-import type { Tables } from '../../../../database.types';
+import Button from '@/components/Button';
+import type { PartialProduct, ProductType } from '@/types';
 
 interface ProductFormProps {
-  product: Partial<Tables<'product'>> | Tables<'product'>;
-  setProduct: React.Dispatch<React.SetStateAction<Partial<Tables<'product'>>>>;
+  product: PartialProduct | ProductType;
+  setProduct: React.Dispatch<React.SetStateAction<PartialProduct>>;
   label?: string;
   nextStep?: () => void; // Optional function to handle next step
   productFormError: string[];
@@ -62,13 +63,9 @@ export default function ProductForm({ product, label, setProduct, nextStep, prod
           />
         </label>
         <div className="flex flex-row justify-between align-items-center">
-          <button
-            type="button"
-            className="bg-brown text-cream px-4 py-2 rounded disabled:opacity-50 cursor-pointer ml-auto"
-            onClick={nextStep}
-          >
+          <Button type="button" onClick={nextStep} className="ml-auto cursor-pointer" disabled={productFormError.length > 0}>
             Continue
-          </button>
+          </Button>
         </div>
       </form>
     </>

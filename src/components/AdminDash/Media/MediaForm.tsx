@@ -3,26 +3,19 @@ import IconButton from '@/components/IconButton';
 import useHandleMedia from '@/hooks/useHandleMedia';
 import { FileUploader } from 'react-drag-drop-files';
 import { BaselineDelete } from '@/components/Svg';
-import {
-  updateMediaItem,
-  uploadMedia,
-} from '@/routes/_dashboard/_actions/mediaActions';
-import type { Tables } from '../../../../database.types';
+import { updateMediaItem, uploadMedia } from '@/routes/_dashboard/_actions/mediaActions';
+import Button from '@/components/Button';
+import type { MediaType } from '@/types';
 
 interface MediaFormProps {
   setShowModal: (value: boolean) => void;
   isUpdating?: boolean;
-  item?: Tables<'media'>;
+  item?: MediaType;
   label?: string;
-  Stepper?: React.ReactNode; // Optional Stepper component
+  Stepper?: React.ReactNode;
 }
 
-export default function MediaForm({
-  setShowModal,
-  isUpdating,
-  item,
-  label,
-}: MediaFormProps) {
+export default function MediaForm({ setShowModal, isUpdating, item, label }: MediaFormProps) {
   const { refreshMedia } = useHandleMedia();
 
   const [imageFile, setImageFile] = React.useState<File | null>(null);
@@ -30,9 +23,7 @@ export default function MediaForm({
   const [mediaLoading, setMediaLoading] = React.useState(false);
   const [mediaName, setMediaName] = React.useState(item?.name || '');
   const [altText, setAltText] = React.useState(item?.alt || '');
-  const [previewUrl, setPreviewUrl] = React.useState<string | null>(
-    item?.url || null,
-  );
+  const [previewUrl, setPreviewUrl] = React.useState<string | null>(item?.url || null);
 
   React.useEffect(() => {
     const id = setTimeout(() => {
@@ -130,12 +121,8 @@ export default function MediaForm({
                       d="M4 16v2a2 2 0 002 2h12a2 2 0 002-2v-2M7 10l5-5m0 0l5 5m-5-5v12"
                     />
                   </svg>
-                  <span className="text-brown-600 text-sm font-medium">
-                    Click or drag to upload
-                  </span>
-                  <span className="text-xs text-brown-400 mt-1">
-                    JPG, PNG, GIF up to 5MB
-                  </span>
+                  <span className="text-brown-600 text-sm font-medium">Click or drag to upload</span>
+                  <span className="text-xs text-brown-400 mt-1">JPG, PNG, GIF up to 5MB</span>
                 </div>
               </FileUploader>
             </div>
@@ -143,11 +130,7 @@ export default function MediaForm({
 
           {previewUrl && (
             <div className="relative flex items-center gap-8 aspect-ratio-1/1 w-66 h-66">
-              <img
-                src={previewUrl}
-                alt="Preview"
-                className="w-full h-full object-cover rounded border"
-              />
+              <img src={previewUrl} alt="Preview" className="w-full h-full object-cover rounded border" />
               {!isUpdating && (
                 <IconButton
                   className="absolute top-0 right-0 m-1 bg-white/80 text-red-600 rounded-full w-10 h-10 p-2 flex items-center justify-center hover:bg-red-100 z-10"
@@ -182,22 +165,21 @@ export default function MediaForm({
             className="border rounded p-2"
           />
         </label>
+
         <div className="flex flex-row justify-between align-items-center mb-4">
-          <div className="flex">
-            <button
-              type="submit"
-              className="bg-brown text-cream px-4 py-2 rounded disabled:opacity-50 cursor-pointer"
-              disabled={mediaLoading}
-            >
-              {mediaLoading
-                ? isUpdating
-                  ? 'Updating...'
-                  : 'Adding...'
-                : isUpdating
-                  ? 'Edit Media'
-                  : 'Add Media'}
-            </button>
-          </div>
+          <Button
+            type="button"
+            disabled={mediaLoading}
+            className="cursor-pointer"
+            variant="border"
+            size="md"
+            onClick={() => setShowModal(false)}
+          >
+            {isUpdating ? 'Discard Changes' : 'Discard'}
+          </Button>
+          <Button type="submit" disabled={mediaLoading} className="cursor-pointer" variant="primary" size="md">
+            {mediaLoading ? (isUpdating ? 'Updating...' : 'Adding...') : isUpdating ? 'Edit Media' : 'Add Media'}
+          </Button>
         </div>
 
         {mediaMessage && <p className="text-red-700">{mediaMessage}</p>}

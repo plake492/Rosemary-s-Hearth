@@ -27,8 +27,6 @@ export default function MediaItem({
   const [showEditModal, setShowEditModal] = React.useState(false);
   const [showDeleteConfirmation, setShowDeleteConfirmation] = React.useState(false);
 
-  console.log('item ==>', item);
-
   return (
     <li key={item.id} className="list-none [&:not(:last-child)]:mb-2 hover:bg-gray-100 transition-colors">
       <div className="mb-2 grid grid-cols-4 gap-4 items-center pl-2">
@@ -42,14 +40,6 @@ export default function MediaItem({
                 {product.name} {i < (item as any).product_media.length - 1 ? ',' : ''}
               </div>
             ))}
-          {/* {item.product_media?.product?.name} */}
-          {/* {item.product_media?.product &&
-                    Object.keys(item.product_media.product).map((key) => (
-                      <div key={key} className="mb-2">
-                        <strong>{'Products'}</strong>{' '}
-                        {item.product_media.product[key]}
-                      </div>
-                    ))} */}
         </div>
         <div className="flex gap-2 ml-8 items-center">
           <IconButton
@@ -98,7 +88,7 @@ export default function MediaItem({
         showModal={showDeleteConfirmation}
         setShowModal={() => setShowDeleteConfirmation(false)}
         style={{ maxWidth: '600px', maxHeight: 'unset', minHeight: 'unset' }}
-        className="max-w-4xl bg-white px-8 pb-4 pr-16"
+        className="max-w-4xl bg-white py-16 px-8"
       >
         <DeleteConfirmation
           onConfirm={() => {

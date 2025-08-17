@@ -1,3 +1,4 @@
+import React from 'react';
 import useHandleMedia from '@/hooks/useHandleMedia';
 import type { DragEndEvent, DragStartEvent } from '@dnd-kit/core';
 import {
@@ -17,8 +18,8 @@ import {
   useSortable,
 } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
-import React from 'react';
-import type { Tables } from '../../../../database.types';
+import type { PartialProduct } from '@/types';
+import Button from '@/components/Button';
 
 // Sortable Image Item Component
 function SortableImageItem({ media, onRemove }: { media: any; onRemove: (uuid: string) => void }) {
@@ -57,7 +58,7 @@ function SortableImageItem({ media, onRemove }: { media: any; onRemove: (uuid: s
 }
 
 interface ProductReviewProps {
-  product: Partial<Tables<'product'>>;
+  product: PartialProduct;
   mediaIds?: string[];
   setCurrentStep: React.Dispatch<React.SetStateAction<number>>;
   setMediaIds: React.Dispatch<React.SetStateAction<string[]>>;
@@ -171,12 +172,9 @@ export default function ProductReview({
                   ) : null}
                 </DragOverlay>
               </DndContext>
-              <button
-                className="text-brown-900 px-4 py-2 rounded block transition-colors cursor-pointer hover:bg-orange-900 hover:text-white border border-orange-900"
-                onClick={() => setCurrentStep(2)}
-              >
+              <Button className="cursor-pointer" variant="secondary" size="sm" onClick={() => setCurrentStep(2)}>
                 Edit
-              </button>
+              </Button>
             </div>
           </>
         )}
@@ -189,32 +187,25 @@ export default function ProductReview({
 
             <p className="text-xl text-bold justify-self-end text-orange-800">${product.price}</p>
           </div>
-          <button
-            className="text-brown-900 px-4 py-2 rounded block transition-colors cursor-pointer hover:bg-orange-900 hover:text-white border border-orange-900"
-            onClick={() => setCurrentStep(1)}
-          >
+          <Button className="cursor-pointer" variant="secondary" size="sm" onClick={() => setCurrentStep(1)}>
             Edit
-          </button>
+          </Button>
         </div>
       </div>
 
       <div className="flex flex-row justify-between align-items-center mt-8">
-        <button
+        <Button
           type="button"
-          className="bg-white text-orange-900 px-4 py-2 rounded disabled:opacity-50 cursor-pointer border-orange-900 border"
+          className="cursor-pointer"
+          variant="border"
           disabled={loading}
           onClick={() => setCurrentStep(2)}
         >
           {loading ? 'Saving...' : 'Back'}
-        </button>
-        <button
-          type="button"
-          className="bg-brown text-cream px-4 py-2 rounded disabled:opacity-50 cursor-pointer"
-          disabled={loading}
-          onClick={handleSubmit}
-        >
+        </Button>
+        <Button type="button" className="cursor-pointer" disabled={loading} onClick={handleSubmit}>
           {loading ? 'Saving...' : 'Save & Close'}
-        </button>
+        </Button>
       </div>
     </>
   );

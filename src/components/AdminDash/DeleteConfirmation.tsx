@@ -1,3 +1,5 @@
+import Button from '@/components/Button';
+
 export default function DeleteConfirmation({
   onConfirm,
   onCancel,
@@ -11,18 +13,12 @@ export default function DeleteConfirmation({
     <div className="">
       <h2 className="text-lg font-bold">{label || 'Confirm Delete'}</h2>
       <div className="flex justify-between mt-8 gap-18">
-        <button
-          className="cursor-pointer border border-red-500 bg-white text-red-500 px-4 py-2 rounded"
-          onClick={onConfirm}
-        >
+        <Button variant="error-border" className="cursor-pointer" fullWidth onClick={onConfirm}>
           Confirm Delete
-        </button>
-        <button
-          className="cursor-pointer bg-gray-300 text-black px-4 py-2 rounded flex-1"
-          onClick={onCancel}
-        >
+        </Button>
+        <Button className="cursor-pointer" fullWidth onClick={onCancel}>
           Cancel
-        </button>
+        </Button>
       </div>
     </div>
   );
