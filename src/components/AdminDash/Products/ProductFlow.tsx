@@ -1,15 +1,15 @@
 import React from 'react';
 import useHandleMdeia from '@/hooks/useHandleMedia';
 import useHandleProducts from '@/hooks/useHandleProducts';
-import { createProduct, updateMediaOnProduct } from '@/routes/_dashboard/_actions/productActions';
+import { createProduct, updateMediaOnProduct, addPriceQtyToProduct } from '@/routes/_dashboard/_actions/productActions';
 import MediaTable from '../Media/MediaTable';
 import MediaTableProductButton from '../Media/MediaTableProductButton';
 import Stepper from '../Stepper';
 import ProductForm from './ProductForm';
 import ProductReview from './ProductReview';
 import Button from '@/components/Button';
-
-import type { ProductWithMedia, PartialProduct, MediaType, ProductStatus } from '@/types';
+import type { ProductWithJoins, PartialProduct, MediaType, ProductStatus } from '@/types';
+import type { PriceQtyFormRow } from './ProductFormPriceQty';
 
 const config = [
   { step: 1, label: 'Product Info' },
@@ -20,7 +20,7 @@ const config = [
 interface ProductFlowProps {
   setShowProductModal: (value: boolean) => void;
   editing?: boolean;
-  item?: ProductWithMedia;
+  item?: ProductWithJoins;
 }
 
 export default function ProductFlow({ setShowProductModal, item, editing }: ProductFlowProps) {
@@ -32,6 +32,7 @@ export default function ProductFlow({ setShowProductModal, item, editing }: Prod
   const [currentStep, setCurrentStep] = React.useState(1);
   const [mediaIds, setMediaIds] = React.useState<string[]>([]);
   const [stepsCompleted, setStepsCompleted] = React.useState<number[]>([]);
+  const [priceQty, setPriceQty] = React.useState<PriceQtyFormRow[]>([{ id: 1, price: '', qty: '' }]);
   const [product, setProduct] = React.useState<PartialProduct>(
     item || {
       name: '',
@@ -63,8 +64,19 @@ export default function ProductFlow({ setShowProductModal, item, editing }: Prod
   }, [currentStep, editing]);
 
   React.useEffect(() => {
-    if (item && item.media) {
-      setMediaIds(item.media?.map((media: MediaType) => media.uuid) || []);
+    if (item) {
+      if (item.media && item.media.length > 0) {
+        setMediaIds(item.media?.map((media: MediaType) => media.uuid) || []);
+      }
+      if (item.priceQty && item.priceQty.length > 0) {
+        // Convert database PriceQtyRow to form PriceQtyFormRow
+        const formRows: PriceQtyFormRow[] = item.priceQty.map((pq) => ({
+          id: pq.id,
+          price: pq.price || '',
+          qty: pq.qty || '',
+        }));
+        setPriceQty(formRows);
+      }
     }
   }, [item]);
 
@@ -84,10 +96,10 @@ export default function ProductFlow({ setShowProductModal, item, editing }: Prod
     return { data, error };
   };
 
-  const handelAddMediaToProduct = async () => {
+  const handelAddMediaToProduct = async (uuid: string) => {
     if (mediaIds && mediaIds.length > 0) {
       const { error } = await updateMediaOnProduct({
-        productId: product.uuid!,
+        productId: uuid || product.uuid!,
         mediaIds,
       });
 
@@ -100,12 +112,8 @@ export default function ProductFlow({ setShowProductModal, item, editing }: Prod
   };
 
   const stepOneNext = async () => {
-    const required = {
-      name: product.name,
-      price: product.price,
-    };
-
-    if (!product.name || !product.price) {
+    const required = { name: product.name };
+    if (!product.name) {
       Object.entries(required).forEach(([key, value]) => {
         if (!value) {
           setProductFormError((prev) => [...prev, key]);
@@ -123,8 +131,18 @@ export default function ProductFlow({ setShowProductModal, item, editing }: Prod
     const { data, error } = await handleCreateProduct(config[config.length - 1].step, status);
     if (error) return;
 
-    const mediaResult = await handelAddMediaToProduct();
+    const mediaResult = await handelAddMediaToProduct(data?.uuid!);
     if (mediaResult?.error) return;
+
+    await addPriceQtyToProduct({
+      productId: data?.uuid!,
+      priceQty: priceQty
+        .filter((row): row is PriceQtyFormRow => row.price !== '' && row.qty !== '')
+        .map((row) => ({
+          price: Number(row.price),
+          qty: Number(row.qty),
+        })),
+    });
 
     await refreshProducts();
 
@@ -144,11 +162,11 @@ export default function ProductFlow({ setShowProductModal, item, editing }: Prod
 
   return (
     <>
-      <div className="absolute top-0 right-0 mr-8 mt-16 flex justify-between  items-start gap-4">
+      <div className="absolute top-0 right-0 mr-8 mt-12 flex justify-between  items-start gap-4">
         {editing ? (
           <>
-            <Button variant="error-border" className="cursor-pointer" onClick={() => setShowProductModal(false)}>
-              Discard Changes
+            <Button variant="border" className="cursor-pointer" onClick={() => setShowProductModal(false)}>
+              Discard Changes & Close
             </Button>
             <Button className="cursor-pointer" onClick={() => handleComplete('complete')}>
               Save & Close
@@ -157,7 +175,7 @@ export default function ProductFlow({ setShowProductModal, item, editing }: Prod
         ) : (
           <>
             <Button onClick={() => setShowProductModal(false)} variant="border" className="cursor-pointer">
-              Discard
+              Discard & Close
             </Button>
             <Button onClick={() => handleComplete('draft')} className="cursor-pointer">
               Save as Draft
@@ -168,7 +186,7 @@ export default function ProductFlow({ setShowProductModal, item, editing }: Prod
       {saveMessage && <div className="bg-red-100 text-red-800 p-4 rounded mb-4">{saveMessage}</div>}
 
       {currentStep === 1 && (
-        <div className="max-w-4xl bg-white py-16 px-8">
+        <div className="max-w-4xl bg-white py-12 px-8">
           <h2 className="h3 mb-18 pr-16">Add Product Info</h2>
           <Stepper
             config={config}
@@ -181,13 +199,15 @@ export default function ProductFlow({ setShowProductModal, item, editing }: Prod
             product={product}
             nextStep={stepOneNext}
             productFormError={productFormError}
+            setPriceQty={setPriceQty}
+            priceQty={priceQty}
           />
         </div>
       )}
 
       {currentStep === 2 && (
         <>
-          <div className="px-8 pt-16">
+          <div className="px-8 pt-12">
             <h2 className="h3 mb-18 pr-16">Add Media</h2>
             <Stepper
               config={config}
@@ -209,7 +229,7 @@ export default function ProductFlow({ setShowProductModal, item, editing }: Prod
       )}
 
       {currentStep === 3 && (
-        <div className="px-8 py-16">
+        <div className="px-8 py-12">
           <h2 className="h3 mb-18 pr-16">Review Produc</h2>
           <Stepper
             config={config}
@@ -224,6 +244,7 @@ export default function ProductFlow({ setShowProductModal, item, editing }: Prod
               setCurrentStep={setCurrentStep}
               handleComplete={handleComplete}
               setMediaIds={setMediaIds}
+              priceQty={priceQty}
             />
           </div>
         </div>

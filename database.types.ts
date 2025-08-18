@@ -77,6 +77,30 @@ export type Database = {
         }
         Relationships: []
       }
+      "price-quantity": {
+        Row: {
+          created_at: string
+          id: number
+          price: number | null
+          qty: number | null
+          uuid: string | null
+        }
+        Insert: {
+          created_at?: string
+          id?: number
+          price?: number | null
+          qty?: number | null
+          uuid?: string | null
+        }
+        Update: {
+          created_at?: string
+          id?: number
+          price?: number | null
+          qty?: number | null
+          uuid?: string | null
+        }
+        Relationships: []
+      }
       product: {
         Row: {
           created_at: string
@@ -145,6 +169,42 @@ export type Database = {
           },
           {
             foreignKeyName: "product_media_product_id_fkey"
+            columns: ["product_id"]
+            isOneToOne: false
+            referencedRelation: "product"
+            referencedColumns: ["uuid"]
+          },
+        ]
+      }
+      "product_price-quantity": {
+        Row: {
+          created_at: string
+          id: number
+          "price-quantity_id": string | null
+          product_id: string | null
+        }
+        Insert: {
+          created_at?: string
+          id?: number
+          "price-quantity_id"?: string | null
+          product_id?: string | null
+        }
+        Update: {
+          created_at?: string
+          id?: number
+          "price-quantity_id"?: string | null
+          product_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "product_price-quantity_price-quantity_id_fkey"
+            columns: ["price-quantity_id"]
+            isOneToOne: false
+            referencedRelation: "price-quantity"
+            referencedColumns: ["uuid"]
+          },
+          {
+            foreignKeyName: "product_price-quantity_product_id_fkey"
             columns: ["product_id"]
             isOneToOne: false
             referencedRelation: "product"

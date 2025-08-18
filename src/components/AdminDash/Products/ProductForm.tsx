@@ -1,5 +1,6 @@
 import React from 'react';
 import Button from '@/components/Button';
+import ProductFormPriceQty, { type PriceQtyFormRow } from './ProductFormPriceQty';
 import type { PartialProduct, ProductType } from '@/types';
 
 interface ProductFormProps {
@@ -8,9 +9,19 @@ interface ProductFormProps {
   label?: string;
   nextStep?: () => void; // Optional function to handle next step
   productFormError: string[];
+  priceQty: PriceQtyFormRow[];
+  setPriceQty: React.Dispatch<React.SetStateAction<PriceQtyFormRow[]>>;
 }
 
-export default function ProductForm({ product, label, setProduct, nextStep, productFormError = [] }: ProductFormProps) {
+export default function ProductForm({
+  product,
+  label,
+  setProduct,
+  nextStep,
+  productFormError = [],
+  setPriceQty,
+  priceQty = [],
+}: ProductFormProps) {
   const handleProductChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) =>
     setProduct({ ...product, [e.target.name]: e.target.value });
 
@@ -27,14 +38,26 @@ export default function ProductForm({ product, label, setProduct, nextStep, prod
               name="name"
               value={product?.name || ''}
               onChange={handleProductChange}
-              className="border rounded p-2"
+              className="border rounded p-2 focus:outline-none focus:ring-2 focus:ring-orange focus:border-transparentit"
               required
             />
           </label>
           {productFormError.includes('name') && <p className="text-red-600 mt-2">Name is required.</p>}
         </div>
+        {/* Description */}
+        <label className="flex flex-col gap-1">
+          <span>Description</span>
+          <textarea
+            name="description"
+            value={product.description || ''}
+            onChange={handleProductChange}
+            className="border rounded p-2 focus:outline-none focus:ring-2 focus:ring-orange focus:border-transparent"
+            rows={6}
+            draggable="false"
+          />
+        </label>
         {/* Price */}
-        <div>
+        {/* <div>
           <label className="flex flex-col gap-1">
             <span>Price</span>
             <input
@@ -49,21 +72,18 @@ export default function ProductForm({ product, label, setProduct, nextStep, prod
           {productFormError.includes('price') && (
             <p className="text-red-600 mt-2">Price is required and must be a valid number.</p>
           )}
+        </div> */}
+        <div className="mt-8">
+          <ProductFormPriceQty rows={priceQty} setRows={setPriceQty} />
         </div>
-        {/* Description */}
-        <label className="flex flex-col gap-1">
-          <span>Description</span>
-          <textarea
-            name="description"
-            value={product.description || ''}
-            onChange={handleProductChange}
-            className="border rounded p-2"
-            rows={6}
-            draggable="false"
-          />
-        </label>
+
         <div className="flex flex-row justify-between align-items-center">
-          <Button type="button" onClick={nextStep} className="ml-auto cursor-pointer" disabled={productFormError.length > 0}>
+          <Button
+            type="button"
+            onClick={nextStep}
+            className="ml-auto cursor-pointer"
+            disabled={productFormError.length > 0}
+          >
             Continue
           </Button>
         </div>

@@ -18,8 +18,10 @@ import {
   useSortable,
 } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
-import type { PartialProduct } from '@/types';
+import type { PartialProduct, ProductWithJoins } from '@/types';
+import type { PriceQtyFormRow } from './ProductFormPriceQty';
 import Button from '@/components/Button';
+import PriceQtyDisplay from '@/components/PriceQtyDisplay';
 
 // Sortable Image Item Component
 function SortableImageItem({ media, onRemove }: { media: any; onRemove: (uuid: string) => void }) {
@@ -63,6 +65,7 @@ interface ProductReviewProps {
   setCurrentStep: React.Dispatch<React.SetStateAction<number>>;
   setMediaIds: React.Dispatch<React.SetStateAction<string[]>>;
   handleComplete: (status: 'complete' | 'draft') => Promise<void>;
+  priceQty?: PriceQtyFormRow[];
 }
 
 export default function ProductReview({
@@ -71,6 +74,7 @@ export default function ProductReview({
   setCurrentStep,
   handleComplete,
   setMediaIds,
+  priceQty,
 }: ProductReviewProps) {
   const { mediaItemsFull } = useHandleMedia();
   const [loading, setLoading] = React.useState(false);
@@ -136,7 +140,7 @@ export default function ProductReview({
       <div className="flex flex-col justify-between h-full">
         {productMedia && productMedia.length > 0 && (
           <>
-            <div>Drag Image to reorder</div>
+            <p className="text-xl">Drag Image to reorder</p>
             <div className="flex justify-between items-center border-b pb-4 mb-4">
               <DndContext
                 sensors={sensors}
@@ -185,7 +189,19 @@ export default function ProductReview({
               <p className="mb-4">{product.description}</p>
             </div>
 
-            <p className="text-xl text-bold justify-self-end text-orange-800">${product.price}</p>
+            {/* <p className="text-xl text-bold justify-self-end text-orange-800">${product.price}</p> */}
+            <div className="pt-2 mt-4 border-t w-fit border-gray-300">
+              <h4>Price & Quantity</h4>
+              <PriceQtyDisplay
+                product={product as ProductWithJoins}
+                tempPriceQty={priceQty
+                  ?.filter((row) => row.price !== '' && row.qty !== '')
+                  .map((row) => ({
+                    price: Number(row.price),
+                    qty: Number(row.qty),
+                  }))}
+              />
+            </div>
           </div>
           <Button className="cursor-pointer" variant="secondary" size="sm" onClick={() => setCurrentStep(1)}>
             Edit

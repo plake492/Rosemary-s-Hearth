@@ -76,7 +76,7 @@ export default function ModalWrapper({
     const calculatedZIndex = baseZIndex + stackIndex * 10;
 
     const backdropProps = {
-      onClick: noCloseOnBackdropClick ? closeModal : () => {},
+      onClick: noCloseOnBackdropClick ? () => {} : closeModal,
     };
 
     return createPortal(

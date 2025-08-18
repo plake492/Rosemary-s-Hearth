@@ -1,5 +1,7 @@
 import type { Tables } from '../../database.types';
 
+export type PriceQtyRow = Tables<'price-quantity'>;
+
 export type ProductType = Tables<'product'>;
 
 export type MediaType = Tables<'media'>;
@@ -8,8 +10,9 @@ export type PartialProduct = Partial<ProductType>;
 
 export type ProductStatus = 'draft' | 'complete' | 'archived';
 
-export interface ProductWithMedia extends ProductType {
+export interface ProductWithJoins extends ProductType {
   media?: MediaType[];
+  priceQty?: PriceQtyRow[];
 }
 
 export type ButtonVariant = 'primary' | 'secondary' | 'border' | 'error' | 'error-border';

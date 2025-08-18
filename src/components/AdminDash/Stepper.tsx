@@ -20,13 +20,13 @@ export default function Stepper({ config, currentStep, setCurrentStep, stepsComp
                   setCurrentStep(step);
                 }
               }}
-              className={`w-8 h-8 rounded-full flex items-center justify-center font-bold text-cream ${
+              className={`w-8 h-8 rounded-full flex items-center justify-center font-bold${
                 step === currentStep
                   ? 'border-4 border-yellow-400 bg-brown'
                   : step < currentStep
                     ? 'text-cream hover:bg-brown transition-colors'
-                    : 'border-brown bg-transparent'
-              } ${stepsCompleted.includes(step) ? ' text-cream  bg-sage border-sage hover:bg-sage-hover cursor-pointer' : ''}`}
+                    : 'border-brown bg-zinc-200'
+              } ${stepsCompleted.includes(step) ? ' text-cream  bg-sage border-sage hover:bg-sage-hover cursor-pointer pointer-events-all' : ''}`}
             >
               {step}
             </div>

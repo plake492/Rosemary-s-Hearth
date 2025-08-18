@@ -175,7 +175,7 @@ export default function MediaForm({ setShowModal, isUpdating, item, label }: Med
             size="md"
             onClick={() => setShowModal(false)}
           >
-            {isUpdating ? 'Discard Changes' : 'Discard'}
+            {isUpdating ? 'Discard Changes & Close' : 'Discard & Close'}
           </Button>
           <Button type="submit" disabled={mediaLoading} className="cursor-pointer" variant="primary" size="md">
             {mediaLoading ? (isUpdating ? 'Updating...' : 'Adding...') : isUpdating ? 'Edit Media' : 'Add Media'}

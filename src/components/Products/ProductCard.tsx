@@ -1,8 +1,9 @@
 import ProductImageCarousel from './ProductImageCarousel';
-import type { ProductWithMedia } from '@/types';
+import PriceQtyDisplay from '../PriceQtyDisplay';
+import type { ProductWithJoins } from '@/types';
 
 interface ProductCardProps {
-  product: ProductWithMedia;
+  product: ProductWithJoins;
   showCTA?: boolean;
 }
 
@@ -30,7 +31,8 @@ export default function ProductCard({ product, showCTA }: ProductCardProps) {
           ) : (
             <span></span>
           )}
-          <p className="h4 text-bold justify-self-end">${product.price}</p>
+          {/* <p className="h4 text-bold justify-self-end">${product.price}</p> */}
+          <PriceQtyDisplay product={product} />
         </div>
       </div>
     </div>

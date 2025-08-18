@@ -8,11 +8,12 @@ import ProductPublishCheckbox from './ProductPublishCheckbox';
 import IconButton from '@/components/IconButton';
 import DeleteConfirmation from '@/components/AdminDash/DeleteConfirmation';
 import { BaselineDelete, OutlineModeEdit } from '@/components/Svg';
-import { handleDeleteProduct } from '../../../routes/_dashboard/_actions/productActions';
-import type { ProductWithMedia } from '@/types';
+import { handleDeleteProduct } from '@/routes/_dashboard/_actions/productActions';
+import PriceQtyDisplay from '@/components/PriceQtyDisplay';
+import type { ProductWithJoins } from '@/types';
 
 interface ProductProps {
-  product: ProductWithMedia;
+  product: ProductWithJoins;
 }
 
 export default function ProductItem({ product }: ProductProps) {
@@ -49,8 +50,8 @@ export default function ProductItem({ product }: ProductProps) {
         )}
         {/* Product Info */}
         <>
-          <div className="flex items-start justify-between gap-4 mb-4">
-            <div className="flex gap-2 overflow-x-auto">
+          <div className="flex items-start justify-between gap-12 mb-4">
+            <div className="flex gap-2 overflow-x-auto flex-1">
               {product.media &&
                 product.media.length > 0 &&
                 product.media.map((media: any) => (
@@ -62,16 +63,19 @@ export default function ProductItem({ product }: ProductProps) {
                   />
                 ))}
             </div>
+            <PriceQtyDisplay product={product as ProductWithJoins}>
+              <h4 className="mb-2 text-end">Price & Quantity</h4>
+            </PriceQtyDisplay>
+          </div>
+          <span className="flex gap-4 items-end">
+            <strong className="h3">{product.name}</strong>
             {isDraft ? (
-              <p className="h4 uppercase">
-                <strong>{product.status}</strong>
+              <p className="h3 uppercase text-stone-400">
+                <strong>({product.status})</strong>
               </p>
             ) : null}
-          </div>
-          <span className="h5 align-sub">
-            <strong className="h3">{product.name}</strong> — ${product.price}
           </span>
-          <span className="text-sm text-gray-700">{product.description}</span>
+          <span className="text-md text-gray-700">{product.description}</span>
         </>
 
         <div className="flex gap-2 justify-between">

@@ -4,7 +4,8 @@ import SideBar from '@/components/Home/SideBar';
 import Products from '@/components/Products/Products';
 import { useLayoutStore } from '@/state/layoutStore';
 import { useMatchMedia } from '@/hooks/useMatchMedia';
-import { fetchProductData } from './_actions/productActions';
+// import { fetchProductData } from './_actions/productActions';
+import { fetchProductData } from '../_dashboard/_actions/productActions';
 // import LinkSection from '@/components/Home/LinkSection';
 
 export const Route = createFileRoute('/_app/')({

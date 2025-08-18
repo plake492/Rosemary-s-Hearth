@@ -5,7 +5,7 @@ import useHandleMedia from '@/hooks/useHandleMedia';
 import MediaForm from './MediaForm';
 import MediaItem from './MediaItem';
 import Button from '@/components/Button';
-import type { ProductWithMedia } from '@/types';
+import type { ProductWithJoins } from '@/types';
 
 interface MediaTableProps {
   showAddButton?: boolean;
@@ -13,7 +13,7 @@ interface MediaTableProps {
   setMediaIds?: React.Dispatch<React.SetStateAction<string[]>>;
   mediaIds?: string[];
   isUpdatingProductMedia?: boolean;
-  item?: ProductWithMedia;
+  item?: ProductWithJoins;
 }
 
 export default function MediaTable({
