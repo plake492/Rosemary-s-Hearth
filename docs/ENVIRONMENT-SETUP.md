@@ -39,6 +39,7 @@ LOG_LEVEL=info                   # error | warn | info | debug
 ## GitHub Token Permissions
 
 Your GitHub personal access token needs these permissions:
+
 - ✅ **repo** (Full repository access)
 - ✅ **workflow** (Update GitHub Action workflows)
 
@@ -82,15 +83,18 @@ For production deployment:
 ### Common Issues
 
 **GitHub API Rate Limits**:
+
 - Increase delay between operations
 - Use GitHub App tokens for higher limits
 
 **Supabase Connection Errors**:
+
 - Verify URL and key are correct
 - Check project status in Supabase dashboard
 - Ensure database is not paused
 
 **Webhook Delivery Failures**:
+
 - Verify webhook URL is accessible
 - Check webhook secret matches
 - Monitor GitHub webhook delivery logs

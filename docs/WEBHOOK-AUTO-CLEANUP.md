@@ -31,6 +31,7 @@ GitHub PR Merge → GitHub Webhook → Your MCP Server → Auto Cleanup
 ### Step 1: MCP Server Webhook Endpoint
 
 Your MCP server needs a webhook endpoint at `/webhook/github` that:
+
 - Receives GitHub webhook events
 - Validates webhook signatures (recommended)
 - Triggers cleanup for merged PRs
@@ -50,6 +51,7 @@ Your MCP server needs a webhook endpoint at `/webhook/github` that:
 ### Step 3: Environment Variables
 
 Add to your MCP server environment:
+
 ```bash
 # Optional but recommended for security
 GITHUB_WEBHOOK_SECRET=your_random_secret_string
@@ -64,6 +66,7 @@ SKIP_CONFIRMATIONS=true
 For local development, you'll need to expose your localhost:
 
 **Option A: ngrok (Recommended)**
+
 ```bash
 # Install ngrok
 brew install ngrok
@@ -75,6 +78,7 @@ ngrok http 5000
 ```
 
 **Option B: localtunnel**
+
 ```bash
 # Install and run
 npm install -g localtunnel
@@ -90,6 +94,7 @@ lt --port 5000
 5. **Check your server logs** for auto-cleanup messages
 
 ### Expected Workflow:
+
 1. ✅ Webhook received: `pull_request` with `action: closed` and `merged: true`
 2. ✅ Auto-cleanup triggered for branch: `feature-branch-name`
 3. ✅ Switched to main and pulled latest changes
@@ -99,12 +104,15 @@ lt --port 5000
 ## 🔍 Debugging
 
 ### GitHub Webhook Deliveries
+
 - Go to **Settings → Webhooks → Recent Deliveries**
 - Check response codes and payloads
 - Look for failed deliveries
 
 ### MCP Server Logs
+
 Monitor your server output for:
+
 ```
 🔄 PR #123 merged: feature-branch → main
 ✅ Auto-cleanup completed for feature-branch:
@@ -114,6 +122,7 @@ Monitor your server output for:
 ```
 
 ### Common Issues
+
 - **404 responses**: Check your tunnel URL and webhook endpoint
 - **401 responses**: Verify webhook secret matches
 - **Cleanup failures**: Check git repository state and permissions
@@ -121,15 +130,16 @@ Monitor your server output for:
 ## 🔐 Security Considerations
 
 ### Webhook Secret Validation
+
 Always validate webhook signatures to ensure requests come from GitHub:
+
 ```javascript
-const expectedSignature = 'sha256=' + crypto
-  .createHmac('sha256', webhookSecret)
-  .update(JSON.stringify(req.body))
-  .digest('hex');
+const expectedSignature =
+  'sha256=' + crypto.createHmac('sha256', webhookSecret).update(JSON.stringify(req.body)).digest('hex');
 ```
 
 ### Network Security
+
 - Use HTTPS for webhook URLs
 - Consider IP whitelisting for GitHub webhook IPs
 - Monitor webhook deliveries for suspicious activity
@@ -137,14 +147,18 @@ const expectedSignature = 'sha256=' + crypto
 ## 🚀 Advanced Features
 
 ### Custom Cleanup Logic
+
 Extend the webhook handler to:
+
 - Send notifications to team chat
 - Update project management tools
 - Trigger additional CI/CD processes
 - Archive branch artifacts
 
 ### Multi-Repository Support
+
 Configure webhooks for multiple repositories:
+
 - Use different webhook endpoints per repo
 - Route based on repository name
 - Maintain separate cleanup configurations
@@ -152,20 +166,24 @@ Configure webhooks for multiple repositories:
 ## 📊 Benefits
 
 ### Time Savings
+
 - **Before**: 3-5 manual commands per PR merge
 - **After**: Zero manual intervention
 
 ### Consistency
+
 - **Before**: Inconsistent cleanup across team members
 - **After**: Standardized cleanup for everyone
 
 ### Error Reduction
+
 - **Before**: Forgotten cleanups lead to cluttered branches
 - **After**: Automatic cleanup prevents accumulation
 
 ## 🎯 Integration with Existing Workflows
 
 This webhook system works seamlessly with:
+
 - ✅ **Automated Git Workflows** (`auto_git_workflow` tool)
 - ✅ **Manual PR creation and merging**
 - ✅ **GitHub CLI workflows**
@@ -180,13 +198,16 @@ The auto-cleanup webhook is the final piece of a fully automated git workflow:
 ## 📝 Maintenance
 
 ### Regular Checks
+
 - Monitor webhook delivery success rates
 - Verify cleanup operations complete successfully
 - Update webhook secrets periodically
 - Test with different PR scenarios
 
 ### Backup Plans
+
 If webhooks fail, manual cleanup is still available:
+
 ```bash
 # Via MCP tool
 ./mcp-server/git-auto.sh cleanup branch-name
