@@ -1,17 +1,31 @@
 {
   "name": "Rosemary's Hearth",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "description": "A micro-bakery online storefront built with React, TypeScript, and Supabase",
   "lastUpdated": "2025-08-26",
-  "build": "1",
+  "build": "2",
   "environment": "development",
   "features": {
-    "mcp_server": "1.3.0",
-    "github_automation": "2.0.0",
+    "mcp_server": "1.4.0",
+    "github_automation": "2.1.0",
     "database_tools": "1.1.0",
-    "web_search": "1.0.0"
+    "web_search": "1.0.0",
+    "webhook_automation": "1.0.0"
   },
   "changelog": [
+    {
+      "version": "1.1.0",
+      "date": "2025-08-26",
+      "changes": [
+        "Added GitHub webhook auto-cleanup functionality",
+        "Implemented automatic branch cleanup on PR merge",
+        "Added comprehensive webhook documentation",
+        "Added interactive webhook setup script",
+        "Added environment configuration guide",
+        "Updated MCP server with webhook endpoint",
+        "Enhanced git automation to level 4 (full-auto)"
+      ]
+    },
     {
       "version": "1.0.0",
       "date": "2025-08-26",
