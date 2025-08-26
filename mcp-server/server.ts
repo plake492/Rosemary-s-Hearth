@@ -98,6 +98,18 @@ app.post('/', async (req, res) => {
                   required: ['title', 'head'],
                 },
               },
+              cleanup_merged_branch: {
+                description: 'Switch to main, pull latest changes, and safely delete merged branch',
+                inputSchema: {
+                  type: 'object',
+                  properties: {
+                    branchName: { type: 'string' },
+                    baseBranch: { type: 'string', default: 'main' },
+                    force: { type: 'boolean', default: false },
+                  },
+                  required: ['branchName'],
+                },
+              },
             },
           },
           serverInfo: {
@@ -285,6 +297,118 @@ app.post('/', async (req, res) => {
               error: {
                 code: -32603,
                 message: `Failed to checkout branch: ${err.message}`,
+              },
+            });
+          }
+        } else if (toolName === 'cleanup_merged_branch') {
+          const { branchName, baseBranch = 'main', force = false } = toolParams;
+          try {
+            const { exec } = await import('child_process');
+            const { promisify } = await import('util');
+            const execAsync = promisify(exec);
+
+            const workspaceRoot = '/Users/patricklake/Dev/freelance/02-rosemarys-hearth/Rosemary-s-Hearth';
+
+            let cleanupSteps: string[] = [];
+
+            // Step 1: Check current branch
+            const { stdout: currentBranch } = await execAsync('git branch --show-current', { cwd: workspaceRoot });
+            const currentBranchName = currentBranch.trim();
+
+            // Step 2: Stash any uncommitted changes if we're on the target branch
+            if (currentBranchName === branchName) {
+              try {
+                const { stdout: statusOutput } = await execAsync('git status --porcelain', { cwd: workspaceRoot });
+                if (statusOutput.trim()) {
+                  await execAsync('git stash push -u -m "Auto-stash before branch cleanup"', { cwd: workspaceRoot });
+                  cleanupSteps.push('Stashed uncommitted changes');
+                }
+              } catch (stashErr) {
+                cleanupSteps.push('Warning: Could not stash changes');
+              }
+
+              // Step 3: Switch to base branch
+              await execAsync(`git checkout ${baseBranch}`, { cwd: workspaceRoot });
+              cleanupSteps.push(`Switched to ${baseBranch} branch`);
+            }
+
+            // Step 4: Pull latest changes
+            await execAsync(`git pull origin ${baseBranch}`, { cwd: workspaceRoot });
+            cleanupSteps.push(`Pulled latest changes from origin/${baseBranch}`);
+
+            // Step 5: Check if branch is merged (unless force delete)
+            if (!force) {
+              try {
+                // Check if branch exists locally
+                await execAsync(`git show-ref --verify --quiet refs/heads/${branchName}`, { cwd: workspaceRoot });
+
+                // Check if branch is merged into base branch
+                const { stdout: mergedBranches } = await execAsync(`git branch --merged ${baseBranch}`, {
+                  cwd: workspaceRoot,
+                });
+                const isMerged = mergedBranches.split('\\n').some((branch) => branch.trim() === branchName);
+
+                if (!isMerged) {
+                  res.json({
+                    content: [
+                      {
+                        type: 'text',
+                        text: `❌ Branch '${branchName}' is not merged into '${baseBranch}'. Use force=true to delete anyway.\\n\\nCompleted steps:\\n${cleanupSteps.map((step) => `✅ ${step}`).join('\\n')}`,
+                      },
+                    ],
+                  });
+                  return;
+                }
+              } catch (branchCheckErr) {
+                // Branch doesn't exist locally, might have been deleted already
+                cleanupSteps.push(`Branch '${branchName}' not found locally`);
+                res.json({
+                  content: [
+                    {
+                      type: 'text',
+                      text: `✅ Cleanup completed successfully!\\n\\nSteps performed:\\n${cleanupSteps.map((step) => `✅ ${step}`).join('\\n')}\\n\\n📝 Branch '${branchName}' was already deleted or doesn't exist locally.`,
+                    },
+                  ],
+                });
+                return;
+              }
+            }
+
+            // Step 6: Delete the branch locally
+            try {
+              await execAsync(`git branch -d ${branchName}`, { cwd: workspaceRoot });
+              cleanupSteps.push(`Deleted local branch '${branchName}'`);
+            } catch (deleteErr: any) {
+              if (force) {
+                // Force delete if requested
+                await execAsync(`git branch -D ${branchName}`, { cwd: workspaceRoot });
+                cleanupSteps.push(`Force deleted local branch '${branchName}'`);
+              } else {
+                throw deleteErr;
+              }
+            }
+
+            // Step 7: Try to delete remote branch if it exists
+            try {
+              await execAsync(`git push origin --delete ${branchName}`, { cwd: workspaceRoot });
+              cleanupSteps.push(`Deleted remote branch 'origin/${branchName}'`);
+            } catch (remoteDeleteErr) {
+              cleanupSteps.push(`Remote branch 'origin/${branchName}' may not exist or was already deleted`);
+            }
+
+            res.json({
+              content: [
+                {
+                  type: 'text',
+                  text: `✅ Cleanup completed successfully!\\n\\nSteps performed:\\n${cleanupSteps.map((step) => `✅ ${step}`).join('\\n')}\\n\\n🎉 Branch '${branchName}' has been safely cleaned up.`,
+                },
+              ],
+            });
+          } catch (err: any) {
+            res.status(500).json({
+              error: {
+                code: -32603,
+                message: `Failed to cleanup branch: ${err.message}`,
               },
             });
           }
