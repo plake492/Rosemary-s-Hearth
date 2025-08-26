@@ -5,3 +5,6 @@ dist-ssr
 *.local
 count.txt
 .env
+
+# Development MCP Server
+mcp-server/
