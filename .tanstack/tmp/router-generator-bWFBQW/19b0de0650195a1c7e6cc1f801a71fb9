@@ -1,0 +1,24 @@
+import { createFileRoute, useRouter } from '@tanstack/react-router';
+import { useEffect } from 'react';
+import ButtonDemo from '@/components/ButtonDemo';
+
+export const Route = createFileRoute('/_dashboard/button')({
+  component: RouteComponent,
+});
+
+function RouteComponent() {
+  const router = useRouter();
+  const user = null; // Replace with your actual user state/context
+
+  useEffect(() => {
+    if (!user) {
+      router.history.back();
+    }
+  }, [user, router]);
+
+  if (!user) {
+    return null; // or a loading spinner
+  }
+
+  return <ButtonDemo />;
+}

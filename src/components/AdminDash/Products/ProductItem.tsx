@@ -1,143 +1,128 @@
 import React from 'react';
 import ModalWrapper from '../../ModalWrapper';
-import ProductForm from './ProductForm';
+import ProductAddFlow from './ProductFlow';
 import { SpinningLoader } from '../../Svg';
 import { wait } from '@/utils/helpers';
 import useHandleProducts from '@/hooks/useHandleProducts';
-import type { Tables } from '../../../../database.types';
+import ProductPublishCheckbox from './ProductPublishCheckbox';
+import IconButton from '@/components/IconButton';
+import DeleteConfirmation from '@/components/AdminDash/DeleteConfirmation';
+import { BaselineDelete, OutlineModeEdit } from '@/components/Svg';
+import { handleDeleteProduct } from '@/routes/_dashboard/_actions/productActions';
+import PriceQtyDisplay from '@/components/PriceQtyDisplay';
+import type { ProductWithJoins } from '@/types';
 
 interface ProductProps {
-  fetchProductData: () => Promise<void>;
-  product: Tables<'product'> & {
-    media?: Tables<'media'>[];
-  };
+  product: ProductWithJoins;
 }
 
-export default function ProductItem({
-  product,
-  fetchProductData,
-}: ProductProps) {
-  const { handleTogglePublished } = useHandleProducts({
+export default function ProductItem({ product }: ProductProps) {
+  const { handleTogglePublished, refreshProducts } = useHandleProducts({
     skipUnpublished: false,
   });
 
   const [showEditProductModal, setShowEditProductModal] = React.useState(false);
-  const [loadingPublishedState, setloadingPublishedState] =
-    React.useState<boolean>(false);
+  const [loadingPublishedState, setloadingPublishedState] = React.useState<boolean>(false);
+  const [showDeleteConfirmation, setShowDeleteConfirmation] = React.useState(false);
 
-  const togglePublished = async () => {
+  const handleDelete = async () => {
+    await handleDeleteProduct(product.uuid);
+    setShowDeleteConfirmation(false);
+    refreshProducts();
+  };
+
+  const togglePublished = async (uuid: string) => {
     setloadingPublishedState(true);
-    await handleTogglePublished(product.uuid);
+    await handleTogglePublished(uuid);
     await wait(1000);
     setloadingPublishedState(false);
   };
 
+  const isDraft = product.status === 'draft';
+
   return (
     <>
-      <li
-        key={product.id}
-        className="flex flex-col align-items-start gap-2 p-2 relative"
-      >
+      <div className="flex flex-col align-items-start gap-2 p-2 relative" id={`product-${product.uuid}`}>
         {loadingPublishedState && (
           <div className="p-24 absolute top-0 left-0 w-full h-full flex items-center justify-center bg-[#39373750]">
             <SpinningLoader />
           </div>
         )}
-        <div className="flex gap-2 overflow-x-auto">
-          {product.media &&
-            product.media.length > 0 &&
-            product.media.map((media: any) => (
-              <img
-                key={media.id}
-                src={media.url}
-                alt={product?.name || 'Product Image'}
-                className="w-32 h-32 object-cover rounded"
-              />
-            ))}
-        </div>
-
-        <span className="h5 align-sub">
-          <strong className="h3">{product.name}</strong> — ${product.price}
-        </span>
-
-        <span className="text-sm text-gray-700">{product.description}</span>
+        {/* Product Info */}
+        <>
+          <div className="flex items-start justify-between gap-12 mb-4">
+            <div className="flex gap-2 overflow-x-auto flex-1">
+              {product.media &&
+                product.media.length > 0 &&
+                product.media.map((media: any) => (
+                  <img
+                    key={media.id}
+                    src={media.url}
+                    alt={product?.name || 'Product Image'}
+                    className="w-32 h-32 object-cover rounded"
+                  />
+                ))}
+            </div>
+            <PriceQtyDisplay product={product as ProductWithJoins}>
+              <h4 className="mb-2 text-end">Price & Quantity</h4>
+            </PriceQtyDisplay>
+          </div>
+          <span className="flex gap-4 items-end">
+            <strong className="h3">{product.name}</strong>
+            {isDraft ? (
+              <p className="h3 uppercase text-stone-400">
+                <strong>({product.status})</strong>
+              </p>
+            ) : null}
+          </span>
+          <span className="text-md text-gray-700">{product.description}</span>
+        </>
 
         <div className="flex gap-2 justify-between">
-          <button
-            className="mt-4 bg-brown text-cream px-4 py-2 rounded block hover:bg-brown-dark transition-colors cursor-pointer"
-            onClick={() => setShowEditProductModal(true)}
-          >
-            Edit Product
-          </button>
-
-          <div className="flex flex-row-reverse items-center gap-2 mt-4">
-            <label
-              htmlFor={`published-toggle-${product.id}`}
-              className="relative inline-flex items-center cursor-pointer select-none"
-              style={{
-                minWidth: 120,
-                opacity: loadingPublishedState ? 0.5 : 1,
-              }}
+          {!isDraft && (
+            <ProductPublishCheckbox
+              product={product}
+              loadingPublishedState={loadingPublishedState}
+              togglePublished={togglePublished}
+            />
+          )}
+          <div className="flex gap-2 ml-auto">
+            <IconButton
+              className="w-12 h-12 p-3 hover:bg-emerald-300 rounded-full cursor-pointer transition color-brown-700"
+              onClick={() => setShowEditProductModal(true)}
+              aria-label="Edit media item"
             >
-              <span
-                className="mr-3 text-base text-gray-800"
-                style={{
-                  opacity: product.published ? 0.4 : 1,
-                }}
-              >
-                Unpublished
-              </span>
-              <input
-                type="checkbox"
-                id={`published-toggle-${product.id}`}
-                name={`published-toggle-${product.id}`}
-                checked={!!product.published}
-                onClick={togglePublished}
-                readOnly
-                className="sr-only peer"
-                disabled={loadingPublishedState}
-              />
-              <span
-                className={`w-11 h-6 flex items-center rounded-full transition-colors relative ${
-                  product.published ? 'bg-orange' : 'bg-gray-300'
-                }`}
-              >
-                <span
-                  className={`absolute left-1 transition-transform w-4 h-4 rounded-full translate ${
-                    product.published
-                      ? 'bg-orange translate-x-5 border-2 border-white'
-                      : 'bg-white'
-                  }`}
-                  style={{
-                    top: '50%',
-                    transform: 'translateY(-50%)',
-                  }}
-                ></span>
-              </span>
-              <span
-                className="ml-3 text-base text-gray-800"
-                style={{
-                  opacity: product.published ? 1 : 0.4,
-                }}
-              >
-                Published
-              </span>
-            </label>
+              <OutlineModeEdit />
+            </IconButton>
+            <IconButton
+              className="w-12 h-12 p-3 hover:bg-red-400 hover:color-white-200 rounded-full cursor-pointer transition color-brown-700"
+              onClick={() => setShowDeleteConfirmation(true)}
+            >
+              <BaselineDelete />
+            </IconButton>
           </div>
         </div>
-      </li>
+      </div>
       <ModalWrapper
-        style={{ maxWidth: '600px' }}
-        className="max-w-4xl bg-white px-8 py-16 pr-16"
+        style={{ maxWidth: '800px' }}
         showModal={showEditProductModal}
         setShowModal={setShowEditProductModal}
+        hideCloseButton
+        noCloseOnBackdropClick
       >
-        <ProductForm
-          product={product}
-          fetchProductData={fetchProductData}
-          isUpdating
-          setShowModal={setShowEditProductModal}
-          label="Edit Product"
+        <ProductAddFlow item={product} setShowProductModal={setShowEditProductModal} editing />
+      </ModalWrapper>
+
+      <ModalWrapper
+        showModal={showDeleteConfirmation}
+        setShowModal={() => setShowDeleteConfirmation(false)}
+        style={{ maxWidth: '600px', maxHeight: 'unset', minHeight: 'unset' }}
+        className="max-w-4xl bg-white py-16 px-8"
+      >
+        <DeleteConfirmation
+          onConfirm={handleDelete}
+          onCancel={() => setShowDeleteConfirmation(false)}
+          label="Delete Media Item"
         />
       </ModalWrapper>
     </>
