@@ -149,7 +149,7 @@ app.post('/', async (req, res) => {
             const sha = refResponse.data.object.sha;
 
             // Create new branch
-            const response = await axios.post(
+            await axios.post(
               `https://api.github.com/repos/${OWNER}/${REPO}/git/refs`,
               {
                 ref: `refs/heads/${branchName}`,
@@ -175,7 +175,8 @@ app.post('/', async (req, res) => {
             });
           }
         } else if (toolName === 'commit_and_push') {
-          const { message, branch, files = [] } = toolParams;
+          // Note: toolParams destructured for future implementation
+          // const { message, branch, files = [] } = toolParams;
           try {
             // This is a simplified implementation - in practice you'd need to:
             // 1. Get current tree SHA
@@ -316,14 +317,14 @@ app.post('/', async (req, res) => {
 });
 
 // -------------------- Legacy HTTP endpoints for testing --------------------
-app.get('/test-connection', async (req, res) => {
+app.get('/test-connection', async (_, res) => {
   const ctx = await getProjectCtx();
   console.log('Project Context:\n', ctx);
   res.json({ success: true, ctx });
 });
 
 // Minimal MCP "initialize" - this is what your config expects
-app.post('/initialize', async (req, res) => {
+app.post('/initialize', async (_, res) => {
   try {
     const context = await getProjectCtx();
     res.json({
@@ -341,7 +342,7 @@ app.post('/initialize', async (req, res) => {
 });
 
 // Also support GET for initialize (some MCP clients expect this)
-app.get('/initialize', async (req, res) => {
+app.get('/initialize', async (_, res) => {
   try {
     const context = await getProjectCtx();
     res.json({
@@ -431,7 +432,7 @@ app.post('/create_pr', async (req, res) => {
 let cachedSchema = 'Loading schema...';
 
 // Expose schema context to Copilot
-app.get('/schema-context', (req, res) => {
+app.get('/schema-context', (_, res) => {
   res.json({ schema: cachedSchema });
 });
 

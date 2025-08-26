@@ -34,7 +34,7 @@ export default function ProductPublishCheckbox({
           id={`published-toggle-${product.id}`}
           name={`published-toggle-${product.id}`}
           checked={!!product.published}
-          onClick={() => togglePublished(product.uuid)}
+          onClick={() => togglePublished(product.uuid || '')}
           readOnly
           className="sr-only peer"
           disabled={loadingPublishedState}
@@ -46,9 +46,7 @@ export default function ProductPublishCheckbox({
         >
           <span
             className={`absolute left-1 transition-transform w-4 h-4 rounded-full translate ${
-              product.published
-                ? 'bg-orange translate-x-5 border-2 border-white'
-                : 'bg-white'
+              product.published ? 'bg-orange translate-x-5 border-2 border-white' : 'bg-white'
             }`}
             style={{
               top: '50%',
